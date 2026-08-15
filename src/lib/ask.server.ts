@@ -89,7 +89,11 @@ export async function askCays(input: { messages: AskMessage[] }) {
     photo: i.photo,
   }));
 
-  history.push({ role: "assistant", content: message?.content ?? "", tool_calls: message?.tool_calls });
+  history.push({
+    role: "assistant",
+    content: message?.content ?? "",
+    ...(message?.tool_calls ? { tool_calls: message.tool_calls } : {}),
+  });
   history.push({
     role: "tool",
     tool_call_id: toolCall.id,
