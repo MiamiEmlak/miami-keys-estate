@@ -53,41 +53,7 @@ function Home() {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
-        <span className="brand-mark text-lg text-foreground">Cays</span>
-        <nav className="flex items-center gap-8 text-sm">
-          <Link
-            to="/search"
-            search={{}}
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Search
-          </Link>
-          <Link
-            to="/buildings"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Buildings
-          </Link>
-          <Link to="/sell" className="text-muted-foreground transition-colors hover:text-foreground">
-            Sell
-          </Link>
-          <Link to="/ask" className="text-muted-foreground transition-colors hover:text-foreground">
-            Ask AI
-          </Link>
-          <Link to="/auth" className="text-muted-foreground transition-colors hover:text-foreground">
-            Sign in
-          </Link>
-          <Link
-            to="/admin/trestle"
-            className="rounded-sm border border-border px-4 py-2 text-xs tracking-widest uppercase text-foreground transition-colors hover:bg-secondary"
-          >
-            Console
-          </Link>
-        </nav>
-      </header>
-
-      <section className="hero-surface isolate mx-auto max-w-6xl overflow-hidden rounded-sm px-6 pb-32 pt-24 text-primary-foreground sm:px-14 sm:pb-40 sm:pt-36">
+      <section className="hero-surface isolate mx-auto mt-8 max-w-6xl overflow-hidden rounded-sm px-6 pb-32 pt-24 text-primary-foreground sm:px-14 sm:pb-40 sm:pt-36">
         <p className="eyebrow text-primary-foreground/60">Miami · Coral Gables · Key Biscayne</p>
         <h1 className="mt-8 max-w-3xl font-display text-5xl leading-[1.05] sm:text-7xl">
           Find a Property You'll Love — or Invest In
