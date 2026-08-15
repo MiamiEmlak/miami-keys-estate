@@ -85,7 +85,7 @@ function Home() {
         </p>
       </section>
 
-      <section className="mx-auto -mt-14 max-w-5xl px-6">
+      <section className="relative z-10 mx-auto -mt-14 max-w-5xl px-6">
         <form
           onSubmit={submit}
           className="rounded-sm border border-border bg-card p-6 shadow-[var(--shadow-elevated)] sm:p-8"
