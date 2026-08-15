@@ -62,15 +62,6 @@ function BuildingProfile() {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <Link to="/" className="brand-mark text-lg text-foreground">
-          Cays
-        </Link>
-        <Link to="/buildings" className="text-sm text-muted-foreground hover:text-foreground">
-          All buildings
-        </Link>
-      </header>
-
       <div className="mx-auto max-w-7xl px-6 pb-24">
         <p className="eyebrow text-muted-foreground">{building.neighborhood}</p>
         <h1 className="mt-4 font-display text-5xl text-foreground">{building.name}</h1>

@@ -23,8 +23,10 @@ export const Route = createFileRoute("/ask")({
         content: "Natural-language Miami property search, ROI estimates and market trends.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/ask" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "/ask" }],
   }),
   component: AskPage,
 });
@@ -78,15 +80,6 @@ function AskPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
-        <Link to="/" className="brand-mark text-lg text-foreground">
-          Cays
-        </Link>
-        <Link to="/search" search={{}} className="text-sm text-muted-foreground hover:text-foreground">
-          Browse listings
-        </Link>
-      </header>
-
       <div className="mx-auto max-w-5xl px-6 pb-28">
         <p className="eyebrow text-muted-foreground">Cays intelligence</p>
         <h1 className="mt-3 flex items-center gap-3 font-display text-5xl text-foreground">

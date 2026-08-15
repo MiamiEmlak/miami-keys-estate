@@ -24,8 +24,10 @@ export const Route = createFileRoute("/buildings/")({
         content: "Luxury Miami towers with live active listing counts and $/sq ft data.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/buildings" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "/buildings" }],
   }),
   component: BuildingsDirectory,
 });
@@ -62,15 +64,6 @@ function BuildingsDirectory() {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <Link to="/" className="brand-mark text-lg text-foreground">
-          Cays
-        </Link>
-        <Link to="/search" search={{}} className="text-sm text-muted-foreground hover:text-foreground">
-          Search listings
-        </Link>
-      </header>
-
       <section className="mx-auto max-w-7xl px-6 pb-8 pt-8">
         <p className="eyebrow text-muted-foreground">Building intelligence</p>
         <h1 className="mt-5 max-w-3xl font-display text-5xl leading-tight text-foreground sm:text-6xl">
