@@ -19,9 +19,13 @@ export const Route = createFileRoute("/buildings/$slug")({
     if (!building) throw notFound();
     return { building };
   },
-  head: ({ loaderData }) => {
+  head: ({ params, loaderData }) => {
+    const canonical = `/buildings/${params.slug}`;
     if (!loaderData) {
-      return { meta: [{ title: "Building unavailable | Cays Realty" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [{ title: "Building unavailable | Cays Realty" }, { name: "robots", content: "noindex" }],
+        links: [{ rel: "canonical", href: canonical }],
+      };
     }
     const b = loaderData.building;
     const title = `${b.name} — ${b.neighborhood} Condos | Cays Realty`;
@@ -33,8 +37,10 @@ export const Route = createFileRoute("/buildings/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
+        { property: "og:url", content: canonical },
         { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [{ rel: "canonical", href: canonical }],
     };
   },
   component: BuildingProfile,
@@ -62,7 +68,7 @@ function BuildingProfile() {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-7xl px-6 pb-24">
+      <div className="mx-auto max-w-7xl px-6 pb-24 pt-10">
         <p className="eyebrow text-muted-foreground">{building.neighborhood}</p>
         <h1 className="mt-4 font-display text-5xl text-foreground">{building.name}</h1>
         <p className="mt-3 text-sm text-muted-foreground">{building.address}</p>
@@ -101,11 +107,15 @@ function BuildingProfile() {
               </p>
             )}
 
-            <div className="mt-8 grid gap-8 sm:grid-cols-2">
-              {units.map((u) => (
-                <PropertyCard key={u.listing_key} listing={{ ...u, photo_count: u.photo ? 1 : 0 }} />
-              ))}
-            </div>
+            {isFetching && units.length === 0 ? (
+              <PropertyGridSkeleton count={4} />
+            ) : (
+              <div className="mt-8 grid gap-8 sm:grid-cols-2">
+                {units.map((u) => (
+                  <PropertyCard key={u.listing_key} listing={{ ...u, photo_count: u.photo ? 1 : 0 }} />
+                ))}
+              </div>
+            )}
 
             {!isFetching && units.length === 0 && !data?.error && (
               <p className="mt-12 text-sm text-muted-foreground">
