@@ -122,7 +122,15 @@ function BuildingsDirectory() {
           {isFetching ? "Loading live building data…" : `${buildings.length} towers`}
         </p>
 
-        <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+        {isFetching && (
+          <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3" aria-hidden>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <BuildingCardSkeleton key={i} />
+            ))}
+          </div>
+        )}
+
+        <div className={`mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3 ${isFetching ? "hidden" : ""}`}>
           {buildings.map((b) => {
             const s = statsBySlug[b.slug];
             return (
@@ -132,18 +140,11 @@ function BuildingsDirectory() {
               >
                 <Link to="/buildings/$slug" params={{ slug: b.slug }} className="block">
                   <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
-                    {s?.photo ? (
-                      <img
-                        src={s.photo}
-                        alt={`${b.name} in ${b.neighborhood}, Miami`}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                        {isFetching ? <Building2 className="h-6 w-6" /> : <ImageOff className="h-6 w-6" />}
-                      </div>
-                    )}
+                    <ListingImage
+                      src={s?.photo}
+                      alt={`${b.name} in ${b.neighborhood}, Miami`}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    />
                     {s?.avgPpsf ? (
                       <span className="absolute left-3 top-3 rounded-sm bg-primary/90 px-2 py-1 text-[10px] uppercase tracking-widest text-primary-foreground">
                         Avg {money(s.avgPpsf)}/sq ft
