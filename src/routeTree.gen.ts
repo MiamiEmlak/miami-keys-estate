@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
+import { Route as BuildingsSlugRouteImport } from './routes/buildings.$slug'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as AuthenticatedAdminTrestleRouteImport } from './routes/_authenticated/admin/trestle'
 
@@ -47,6 +48,11 @@ const BuildingsIndexRoute = BuildingsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => BuildingsRoute,
 } as any)
+const BuildingsSlugRoute = BuildingsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BuildingsRoute,
+} as any)
 const PropertyIdRoute = PropertyIdRouteImport.update({
   id: '/property/$id',
   path: '/property/$id',
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/search': typeof SearchRoute
+  '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/search': typeof SearchRoute
+  '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings': typeof BuildingsIndexRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/search': typeof SearchRoute
+  '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
   '/_authenticated/admin/trestle': typeof AuthenticatedAdminTrestleRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/search'
+    | '/buildings/$slug'
     | '/property/$id'
     | '/buildings/'
     | '/admin/trestle'
@@ -102,6 +112,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/search'
+    | '/buildings/$slug'
     | '/property/$id'
     | '/buildings'
     | '/admin/trestle'
@@ -112,6 +123,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/search'
+    | '/buildings/$slug'
     | '/property/$id'
     | '/buildings/'
     | '/_authenticated/admin/trestle'
@@ -170,6 +182,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BuildingsIndexRouteImport
       parentRoute: typeof BuildingsRoute
     }
+    '/buildings/$slug': {
+      id: '/buildings/$slug'
+      path: '/$slug'
+      fullPath: '/buildings/$slug'
+      preLoaderRoute: typeof BuildingsSlugRouteImport
+      parentRoute: typeof BuildingsRoute
+    }
     '/property/$id': {
       id: '/property/$id'
       path: '/property/$id'
@@ -199,10 +218,12 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface BuildingsRouteChildren {
+  BuildingsSlugRoute: typeof BuildingsSlugRoute
   BuildingsIndexRoute: typeof BuildingsIndexRoute
 }
 
 const BuildingsRouteChildren: BuildingsRouteChildren = {
+  BuildingsSlugRoute: BuildingsSlugRoute,
   BuildingsIndexRoute: BuildingsIndexRoute,
 }
 
