@@ -11,8 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AskRouteImport } from './routes/ask'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BuildingsRouteImport } from './routes/buildings'
+import { Route as CompareRouteImport } from './routes/compare'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
@@ -29,6 +31,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AskRoute = AskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -37,6 +44,11 @@ const AuthRoute = AuthRouteImport.update({
 const BuildingsRoute = BuildingsRouteImport.update({
   id: '/buildings',
   path: '/buildings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompareRoute = CompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -73,8 +85,10 @@ const AuthenticatedAdminTrestleRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
+  '/compare': typeof CompareRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
@@ -84,7 +98,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
+  '/compare': typeof CompareRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
@@ -96,8 +112,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
+  '/compare': typeof CompareRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
@@ -109,8 +127,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ask'
     | '/auth'
     | '/buildings'
+    | '/compare'
     | '/search'
     | '/sell'
     | '/buildings/$slug'
@@ -120,7 +140,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ask'
     | '/auth'
+    | '/compare'
     | '/search'
     | '/sell'
     | '/buildings/$slug'
@@ -131,8 +153,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/ask'
     | '/auth'
     | '/buildings'
+    | '/compare'
     | '/search'
     | '/sell'
     | '/buildings/$slug'
@@ -144,8 +168,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AskRoute: typeof AskRoute
   AuthRoute: typeof AuthRoute
   BuildingsRoute: typeof BuildingsRouteWithChildren
+  CompareRoute: typeof CompareRoute
   SearchRoute: typeof SearchRoute
   SellRoute: typeof SellRoute
   PropertyIdRoute: typeof PropertyIdRoute
@@ -167,6 +193,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ask': {
+      id: '/ask'
+      path: '/ask'
+      fullPath: '/ask'
+      preLoaderRoute: typeof AskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -179,6 +212,13 @@ declare module '@tanstack/react-router' {
       path: '/buildings'
       fullPath: '/buildings'
       preLoaderRoute: typeof BuildingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compare': {
+      id: '/compare'
+      path: '/compare'
+      fullPath: '/compare'
+      preLoaderRoute: typeof CompareRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -254,8 +294,10 @@ const BuildingsRouteWithChildren = BuildingsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AskRoute: AskRoute,
   AuthRoute: AuthRoute,
   BuildingsRoute: BuildingsRouteWithChildren,
+  CompareRoute: CompareRoute,
   SearchRoute: SearchRoute,
   SellRoute: SellRoute,
   PropertyIdRoute: PropertyIdRoute,

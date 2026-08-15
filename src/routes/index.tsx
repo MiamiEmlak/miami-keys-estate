@@ -72,6 +72,9 @@ function Home() {
           <Link to="/sell" className="text-muted-foreground transition-colors hover:text-foreground">
             Sell
           </Link>
+          <Link to="/ask" className="text-muted-foreground transition-colors hover:text-foreground">
+            Ask AI
+          </Link>
           <Link to="/auth" className="text-muted-foreground transition-colors hover:text-foreground">
             Sign in
           </Link>

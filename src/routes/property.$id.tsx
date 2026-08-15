@@ -8,6 +8,7 @@ import { getListingFn, saveListingFn } from "@/lib/listings.functions";
 import { money, num, perSqFt, fullAddress } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { ScheduleShowingDialog } from "@/components/leads/ScheduleShowingDialog";
+import { InvestmentCalculator } from "@/components/investment/InvestmentCalculator";
 
 export const Route = createFileRoute("/property/$id")({
   head: () => ({
@@ -182,6 +183,8 @@ function PropertyPage() {
 
           <LeadSidebar listingKey={p.listing_key} address={fullAddress(p)} />
         </div>
+
+        <InvestmentCalculator listing={p} />
       </div>
     </main>
   );

@@ -126,6 +126,12 @@ function SearchPage() {
   const set = (patch: Partial<Search>) =>
     navigate({ search: (prev) => ({ ...prev, ...patch, page: patch.page ?? 1 }) });
 
+  const [compare, setCompare] = useState<string[]>([]);
+  const toggleCompare = (key: string) =>
+    setCompare((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : prev.length >= 4 ? prev : [...prev, key],
+    );
+
   const total = data?.total ?? 0;
   const lastPage = Math.max(1, Math.ceil(total / pageSize));
 
@@ -175,7 +181,12 @@ function SearchPage() {
 
           <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
             {(data?.items ?? []).map((listing) => (
-              <PropertyCard key={listing.listing_key} listing={listing} />
+              <PropertyCard
+                key={listing.listing_key}
+                listing={listing}
+                compareSelected={compare.includes(listing.listing_key)}
+                onToggleCompare={toggleCompare}
+              />
             ))}
           </div>
 
@@ -206,6 +217,26 @@ function SearchPage() {
           </div>
         </section>
       </div>
+
+      {compare.length > 0 && (
+        <div className="sticky bottom-0 z-20 border-t border-border bg-card/95 backdrop-blur">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+            <p className="text-sm text-muted-foreground">
+              {compare.length} of 4 selected for comparison
+            </p>
+            <div className="flex gap-3">
+              <Button variant="ghost" onClick={() => setCompare([])}>
+                Clear
+              </Button>
+              <Button asChild>
+                <Link to="/compare" search={{ ids: compare.join(",") }}>
+                  Compare {compare.length}
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
