@@ -7,6 +7,7 @@ import { FileText } from "lucide-react";
 import { getBuildingProfileFn } from "@/lib/buildings.functions";
 import { getBuilding } from "@/lib/buildings";
 import { PropertyCard } from "@/components/listings/PropertyCard";
+import { PropertyGridSkeleton } from "@/components/listings/Skeletons";
 import { supabase } from "@/integrations/supabase/client";
 import { money, num } from "@/lib/format";
 import { Button } from "@/components/ui/button";
