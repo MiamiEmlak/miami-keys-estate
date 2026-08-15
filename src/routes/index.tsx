@@ -75,7 +75,7 @@ function Home() {
         </nav>
       </header>
 
-      <section className="hero-surface relative mx-auto max-w-6xl overflow-hidden rounded-sm px-6 py-24 text-primary-foreground sm:px-14 sm:py-36">
+      <section className="hero-surface isolate mx-auto max-w-6xl overflow-hidden rounded-sm px-6 pb-32 pt-24 text-primary-foreground sm:px-14 sm:pb-40 sm:pt-36">
         <p className="eyebrow text-primary-foreground/60">Miami · Coral Gables · Key Biscayne</p>
         <h1 className="mt-8 max-w-3xl font-display text-5xl leading-[1.05] sm:text-7xl">
           Find a Property You'll Love — or Invest In
@@ -85,7 +85,7 @@ function Home() {
         </p>
       </section>
 
-      <section className="relative z-10 mx-auto -mt-14 max-w-5xl px-6">
+      <section className="relative z-10 mx-auto -mt-16 max-w-5xl px-6">
         <form
           onSubmit={submit}
           className="rounded-sm border border-border bg-card p-6 shadow-[var(--shadow-elevated)] sm:p-8"
