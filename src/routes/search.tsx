@@ -217,6 +217,26 @@ function SearchPage() {
           </div>
         </section>
       </div>
+
+      {compare.length > 0 && (
+        <div className="sticky bottom-0 z-20 border-t border-border bg-card/95 backdrop-blur">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+            <p className="text-sm text-muted-foreground">
+              {compare.length} of 4 selected for comparison
+            </p>
+            <div className="flex gap-3">
+              <Button variant="ghost" onClick={() => setCompare([])}>
+                Clear
+              </Button>
+              <Button asChild>
+                <Link to="/compare" search={{ ids: compare.join(",") }}>
+                  Compare {compare.length}
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
