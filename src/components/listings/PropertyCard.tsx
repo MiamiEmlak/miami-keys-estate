@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, Heart, ImageOff } from "lucide-react";
+import { Bell, Heart, ImageOff, Scale } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
@@ -7,7 +7,15 @@ import { saveListingFn } from "@/lib/listings.functions";
 import { money, num, perSqFt, fullAddress } from "@/lib/format";
 import type { ListingCard } from "@/lib/listings.server";
 
-export function PropertyCard({ listing }: { listing: ListingCard }) {
+export function PropertyCard({
+  listing,
+  compareSelected,
+  onToggleCompare,
+}: {
+  listing: ListingCard;
+  compareSelected?: boolean;
+  onToggleCompare?: (listingKey: string) => void;
+}) {
   const save = useServerFn(saveListingFn);
   const [busy, setBusy] = useState<"save" | "watch" | null>(null);
 
@@ -41,6 +49,21 @@ export function PropertyCard({ listing }: { listing: ListingCard }) {
           )}
         </Link>
         <div className="absolute right-3 top-3 flex gap-2">
+          {onToggleCompare && (
+            <button
+              type="button"
+              aria-label={compareSelected ? "Remove from comparison" : "Add to comparison"}
+              aria-pressed={compareSelected}
+              onClick={() => onToggleCompare(listing.listing_key)}
+              className={`rounded-full p-2 transition-colors ${
+                compareSelected
+                  ? "bg-accent text-accent-foreground"
+                  : "bg-background/90 text-foreground hover:bg-background"
+              }`}
+            >
+              <Scale className="h-4 w-4" />
+            </button>
+          )}
           <button
             type="button"
             aria-label="Save property"
