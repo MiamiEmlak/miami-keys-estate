@@ -85,7 +85,7 @@ export async function trestleGet(
   env: TrestleEnv,
   path: string,
   query: Record<string, string>,
-): Promise<{ value: Record<string, unknown>[]; count?: number }> {
+): Promise<{ value: Record<string, unknown>[]; count: number | undefined }> {
   const token = await getTrestleToken(env);
   const url = new URL(`${env.baseUrl}/${path.replace(/^\//, "")}`);
   for (const [k, v] of Object.entries(query)) url.searchParams.set(k, v);
