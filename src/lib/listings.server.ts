@@ -135,8 +135,17 @@ export async function getListingDetail(listingKey: string) {
       $orderby: "Order asc",
     });
 
-    const list = (v: unknown): string[] =>
-      Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+    // Trestle returns multi-value fields as comma-separated CamelCase strings.
+    const humanize = (v: string) =>
+      v.replace(/([a-z0-9])([A-Z])/g, "$1 $2").replace(/\s+/g, " ").trim();
+    const list = (v: unknown): string[] => {
+      const raw = Array.isArray(v)
+        ? v.filter((x): x is string => typeof x === "string")
+        : typeof v === "string"
+          ? v.split(",")
+          : [];
+      return raw.map(humanize).filter(Boolean);
+    };
 
     return {
       listing: normalizeProperty(raw),

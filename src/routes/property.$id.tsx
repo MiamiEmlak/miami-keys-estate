@@ -135,7 +135,7 @@ function PropertyPage() {
                 ["Baths", num(p.bathrooms_total)],
                 ["Living area", `${num(p.living_area)} sq ft`],
                 ["$ / sq ft", perSqFt(p.list_price, p.living_area)],
-                ["Year built", num(p.year_built)],
+                ["Year built", p.year_built ? String(p.year_built) : "—"],
                 ["Lot size", p.lot_size ? `${num(p.lot_size)} sq ft` : "—"],
                 [
                   "HOA fee",
