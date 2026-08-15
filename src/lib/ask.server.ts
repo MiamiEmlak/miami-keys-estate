@@ -3,6 +3,18 @@ import { searchListings, type SearchParamsInput } from "./listings.server";
 
 export type AskMessage = { role: "user" | "assistant"; content: string };
 
+export type CompactListing = {
+  listing_key: string;
+  price: number | null;
+  address: string | null;
+  city: string | null;
+  beds: number | null;
+  baths: number | null;
+  sqft: number | null;
+  hoa: number | null;
+  photo: string | null;
+};
+
 const SYSTEM = `You are Cays AI, a Miami real estate assistant for Cays Realty.
 You help users find Miami properties, understand rental yields and read market trends.
 When a request implies looking for listings, call search_listings with the best filters you can infer.
@@ -54,7 +66,8 @@ async function callGateway(apiKey: string, messages: GatewayMessage[]) {
 
 export async function askCays(input: { messages: AskMessage[] }) {
   const apiKey = process.env["LOVABLE_API_KEY"];
-  if (!apiKey) return { reply: "AI is not configured yet.", listings: [], search: null };
+  if (!apiKey)
+    return { reply: "AI is not configured yet.", listings: [] as CompactListing[], search: null };
 
   const history: GatewayMessage[] = [
     { role: "system", content: SYSTEM },
@@ -66,7 +79,11 @@ export async function askCays(input: { messages: AskMessage[] }) {
   const toolCall = message?.tool_calls?.[0];
 
   if (!toolCall) {
-    return { reply: message?.content ?? "Sorry, I couldn't answer that.", listings: [], search: null };
+    return {
+      reply: message?.content ?? "Sorry, I couldn't answer that.",
+      listings: [] as CompactListing[],
+      search: null,
+    };
   }
 
   let args: SearchParamsInput = {};
@@ -77,7 +94,7 @@ export async function askCays(input: { messages: AskMessage[] }) {
   }
 
   const result = await searchListings({ ...args, pageSize: 6, page: 1 });
-  const compact = result.items.map((i) => ({
+  const compact: CompactListing[] = result.items.map((i) => ({
     listing_key: i.listing_key,
     price: i.list_price,
     address: i.street_address,
@@ -101,9 +118,18 @@ export async function askCays(input: { messages: AskMessage[] }) {
   });
 
   const second = await callGateway(apiKey, history);
+  const search = {
+    city: args.city ?? null,
+    zip: args.zip ?? null,
+    type: args.type ?? null,
+    minPrice: args.minPrice ?? null,
+    maxPrice: args.maxPrice ?? null,
+    beds: args.beds ?? null,
+  };
+
   return {
     reply: second.choices[0]?.message?.content ?? "Here is what I found.",
     listings: compact,
-    search: args as Record<string, unknown>,
+    search,
   };
 }
