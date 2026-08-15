@@ -9,18 +9,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 type Search = {
-  city: string;
-  zip: string;
-  type: string;
-  minPrice: number;
-  maxPrice: number;
-  beds: number;
-  baths: number;
-  propertyType: string;
-  sort: string;
-  filter: string;
-  page: number;
+  city?: string;
+  zip?: string;
+  type?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  beds?: number;
+  baths?: number;
+  propertyType?: string;
+  sort?: string;
+  filter?: string;
+  page?: number;
 };
+
+type ResolvedSearch = Required<Search>;
 
 const s = (v: unknown, d = "") => (typeof v === "string" && v ? v : d);
 const n = (v: unknown, d = 0) => (Number.isFinite(Number(v)) && v !== "" && v != null ? Number(v) : d);
@@ -81,7 +83,20 @@ const SORTS = [
 ];
 
 function SearchPage() {
-  const search = Route.useSearch();
+  const raw = Route.useSearch();
+  const search: ResolvedSearch = {
+    city: raw.city ?? "",
+    zip: raw.zip ?? "",
+    type: raw.type ?? "buy",
+    minPrice: raw.minPrice ?? 0,
+    maxPrice: raw.maxPrice ?? 0,
+    beds: raw.beds ?? 0,
+    baths: raw.baths ?? 0,
+    propertyType: raw.propertyType ?? "",
+    sort: raw.sort ?? "newest",
+    filter: raw.filter ?? "",
+    page: raw.page ?? 1,
+  };
   const navigate = useNavigate({ from: "/search" });
   const run = useServerFn(searchListingsFn);
   const pageSize = 24;
@@ -195,7 +210,7 @@ function SearchPage() {
   );
 }
 
-function Filters({ search, set }: { search: Search; set: (patch: Partial<Search>) => void }) {
+function Filters({ search, set }: { search: ResolvedSearch; set: (patch: Partial<Search>) => void }) {
   const [city, setCity] = useState(search.city);
   const [zip, setZip] = useState(search.zip);
   const [minPrice, setMin] = useState(search.minPrice ? String(search.minPrice) : "");
