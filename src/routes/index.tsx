@@ -20,8 +20,10 @@ export const Route = createFileRoute("/")({
         content: "Live MLS data and private market intelligence for Miami luxury real estate.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "/" }],
   }),
   component: Home,
 });
@@ -199,12 +201,6 @@ function Home() {
         ))}
       </section>
 
-      <footer className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-10 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <span className="brand-mark text-foreground">Cays Realty</span>
-          <span>Foundation build · Miami, Florida</span>
-        </div>
-      </footer>
     </main>
   );
 }
