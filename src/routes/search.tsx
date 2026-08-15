@@ -212,7 +212,7 @@ function Filters({ search, set }: { search: Search; set: (patch: Partial<Search>
             <button
               key={value}
               type="button"
-              onClick={() => set({ type: value })}
+              onClick={() => set({ type: value as string })}
               className={`rounded-sm border px-3 py-2 text-xs uppercase tracking-widest transition-colors ${
                 search.type === value
                   ? "border-primary bg-primary text-primary-foreground"

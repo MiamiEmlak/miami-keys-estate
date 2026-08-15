@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as AuthenticatedAdminTrestleRouteImport } from './routes/_authenticated/admin/trestle'
 
@@ -29,6 +30,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PropertyIdRoute = PropertyIdRouteImport.update({
   id: '/property/$id',
   path: '/property/$id',
@@ -44,12 +50,14 @@ const AuthenticatedAdminTrestleRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/search': typeof SearchRoute
   '/property/$id': typeof PropertyIdRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/search': typeof SearchRoute
   '/property/$id': typeof PropertyIdRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
@@ -58,19 +66,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/search': typeof SearchRoute
   '/property/$id': typeof PropertyIdRoute
   '/_authenticated/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/property/$id' | '/admin/trestle'
+  fullPaths: '/' | '/auth' | '/search' | '/property/$id' | '/admin/trestle'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/property/$id' | '/admin/trestle'
+  to: '/' | '/auth' | '/search' | '/property/$id' | '/admin/trestle'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/search'
     | '/property/$id'
     | '/_authenticated/admin/trestle'
   fileRoutesById: FileRoutesById
@@ -79,6 +89,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  SearchRoute: typeof SearchRoute
   PropertyIdRoute: typeof PropertyIdRoute
 }
 
@@ -103,6 +114,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/property/$id': {
@@ -137,6 +155,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  SearchRoute: SearchRoute,
   PropertyIdRoute: PropertyIdRoute,
 }
 export const routeTree = rootRouteImport

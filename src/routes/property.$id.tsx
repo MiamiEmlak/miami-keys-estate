@@ -67,7 +67,7 @@ function PropertyPage() {
     return (
       <div className="p-16 text-center text-sm text-muted-foreground">
         {data?.error ?? "This listing is no longer available."}{" "}
-        <Link to="/search" className="underline">
+        <Link to="/search" search={{}} className="underline">
           Back to search
         </Link>
       </div>
@@ -84,7 +84,7 @@ function PropertyPage() {
         <Link to="/" className="brand-mark text-lg text-foreground">
           Cays
         </Link>
-        <Link to="/search" className="text-sm text-muted-foreground hover:text-foreground">
+        <Link to="/search" search={{}} className="text-sm text-muted-foreground hover:text-foreground">
           Back to search
         </Link>
       </header>

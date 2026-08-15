@@ -2,18 +2,18 @@
 import { readTrestleEnv, trestleGet, normalizeProperty, normalizeMedia } from "./trestle.server";
 
 export type SearchParamsInput = {
-  city?: string;
-  zip?: string;
-  type?: string; // buy | rent | investment
-  minPrice?: number;
-  maxPrice?: number;
-  beds?: number;
-  baths?: number;
-  propertyType?: string;
-  sort?: string; // newest | price_asc | price_desc | ppsf
-  filter?: string; // price_drops
-  page?: number;
-  pageSize?: number;
+  city?: string | undefined;
+  zip?: string | undefined;
+  type?: string | undefined; // buy | rent | investment
+  minPrice?: number | undefined;
+  maxPrice?: number | undefined;
+  beds?: number | undefined;
+  baths?: number | undefined;
+  propertyType?: string | undefined;
+  sort?: string | undefined; // newest | price_asc | price_desc | ppsf
+  filter?: string | undefined; // price_drops
+  page?: number | undefined;
+  pageSize?: number | undefined;
 };
 
 export type ListingCard = ReturnType<typeof normalizeProperty> & {
