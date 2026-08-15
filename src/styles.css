@@ -61,6 +61,13 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme inline {
+  --color-sand: var(--sand);
+  --color-ocean: var(--ocean);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+}
+
 :root {
   --radius: 0.25rem;
   --background: oklch(0.985 0.008 95);
@@ -147,5 +154,36 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
   }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+}
+
+@utility hero-surface {
+  background-image: var(--gradient-hero);
+}
+
+@utility elevated {
+  box-shadow: var(--shadow-elevated);
+}
+
+@utility brand-mark {
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-brand);
+  text-transform: uppercase;
+}
+
+@utility eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
 }
