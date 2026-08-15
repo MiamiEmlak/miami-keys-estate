@@ -20,6 +20,8 @@ You help users find Miami properties, understand rental yields and read market t
 When a request implies looking for listings, call search_listings with the best filters you can infer.
 Miami cities you can use: Miami, Miami Beach, Sunny Isles Beach, Coral Gables, Aventura, Bal Harbour.
 Brickell, Edgewater, Downtown and Wynwood are neighborhoods inside the city "Miami".
+Never ask the user for permission or clarification before searching — always call search_listings first with your best guess,
+then explain any approximations in your answer.
 Keep answers under 120 words, concrete and never invent listings — only reference the ones returned by the tool.`;
 
 const TOOL = {
@@ -39,6 +41,7 @@ const TOOL = {
         baths: { type: "number" },
         sort: { type: "string", enum: ["newest", "price_asc", "price_desc"] },
         filter: { type: "string", enum: ["price_drops"] },
+        maxHoa: { type: "number", description: "Maximum monthly HOA fee" },
       },
       additionalProperties: false,
     },
@@ -86,15 +89,21 @@ export async function askCays(input: { messages: AskMessage[] }) {
     };
   }
 
-  let args: SearchParamsInput = {};
+  let args: SearchParamsInput & { maxHoa?: number } = {};
   try {
-    args = JSON.parse(toolCall.function.arguments || "{}") as SearchParamsInput;
+    args = JSON.parse(toolCall.function.arguments || "{}") as SearchParamsInput & {
+      maxHoa?: number;
+    };
   } catch {
     args = {};
   }
 
-  const result = await searchListings({ ...args, pageSize: 6, page: 1 });
-  const compact: CompactListing[] = result.items.map((i) => ({
+  const { maxHoa, ...searchArgs } = args;
+  const result = await searchListings({ ...searchArgs, pageSize: 12, page: 1 });
+  const filtered = maxHoa
+    ? result.items.filter((i) => (i.association_fee ?? 0) <= maxHoa)
+    : result.items;
+  const compact: CompactListing[] = filtered.slice(0, 6).map((i) => ({
     listing_key: i.listing_key,
     price: i.list_price,
     address: i.street_address,
