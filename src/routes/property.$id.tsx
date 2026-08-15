@@ -5,11 +5,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Bell, Heart } from "lucide-react";
 import { getListingFn, saveListingFn } from "@/lib/listings.functions";
-import { supabase } from "@/integrations/supabase/client";
 import { money, num, perSqFt, fullAddress } from "@/lib/format";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { ScheduleShowingDialog } from "@/components/leads/ScheduleShowingDialog";
 
 export const Route = createFileRoute("/property/$id")({
   head: () => ({
@@ -192,27 +190,6 @@ function PropertyPage() {
 function LeadSidebar({ listingKey, address }: { listingKey: string; address: string }) {
   const navigate = useNavigate();
   const save = useServerFn(saveListingFn);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", date: "" });
-  const [busy, setBusy] = useState(false);
-
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    const { error } = await supabase.from("leads").insert({
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      lead_type: "showing_request",
-      source: "property_detail",
-      notes: `Showing request for ${address} (MLS ${listingKey}). Preferred date: ${form.date || "flexible"}.`,
-    });
-    setBusy(false);
-    if (error) toast.error("We couldn't send that request. Please try again.");
-    else {
-      toast.success("Request sent — an advisor will contact you shortly.");
-      setForm({ name: "", email: "", phone: "", date: "" });
-    }
-  }
 
   async function act(mode: "save" | "watch") {
     try {
@@ -227,48 +204,13 @@ function LeadSidebar({ listingKey, address }: { listingKey: string; address: str
   return (
     <aside className="lg:sticky lg:top-8 lg:self-start">
       <div className="rounded-sm border border-border bg-card p-6">
-        <h2 className="font-display text-2xl">Schedule a showing</h2>
-        <form className="mt-5 space-y-4" onSubmit={submit}>
-          <div>
-            <Label htmlFor="lead-name">Name</Label>
-            <Input
-              id="lead-name"
-              required
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-          </div>
-          <div>
-            <Label htmlFor="lead-email">Email</Label>
-            <Input
-              id="lead-email"
-              type="email"
-              required
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-          </div>
-          <div>
-            <Label htmlFor="lead-phone">Phone</Label>
-            <Input
-              id="lead-phone"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            />
-          </div>
-          <div>
-            <Label htmlFor="lead-date">Preferred date</Label>
-            <Input
-              id="lead-date"
-              type="date"
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-            />
-          </div>
-          <Button type="submit" className="w-full" disabled={busy}>
-            {busy ? "Sending…" : "Request showing"}
-          </Button>
-        </form>
+        <h2 className="font-display text-2xl">Tour this property</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Pick a date and time — in person or virtual — and an advisor confirms with you directly.
+        </p>
+        <div className="mt-5">
+          <ScheduleShowingDialog listingKey={listingKey} address={address} />
+        </div>
 
         <div className="mt-6 space-y-3 border-t border-border pt-6">
           <Button variant="outline" className="w-full" onClick={() => act("watch")}>

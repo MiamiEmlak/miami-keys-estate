@@ -63,6 +63,15 @@ function Home() {
           >
             Search
           </Link>
+          <Link
+            to="/buildings"
+            className="text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Buildings
+          </Link>
+          <Link to="/sell" className="text-muted-foreground transition-colors hover:text-foreground">
+            Sell
+          </Link>
           <Link to="/auth" className="text-muted-foreground transition-colors hover:text-foreground">
             Sign in
           </Link>

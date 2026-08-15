@@ -14,6 +14,9 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as SellRouteImport } from './routes/sell'
+import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
+import { Route as BuildingsSlugRouteImport } from './routes/buildings.$slug'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as AuthenticatedAdminTrestleRouteImport } from './routes/_authenticated/admin/trestle'
 
@@ -41,6 +44,21 @@ const SearchRoute = SearchRouteImport.update({
   path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SellRoute = SellRouteImport.update({
+  id: '/sell',
+  path: '/sell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuildingsIndexRoute = BuildingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BuildingsRoute,
+} as any)
+const BuildingsSlugRoute = BuildingsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BuildingsRoute,
+} as any)
 const PropertyIdRoute = PropertyIdRouteImport.update({
   id: '/property/$id',
   path: '/property/$id',
@@ -56,17 +74,22 @@ const AuthenticatedAdminTrestleRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/buildings': typeof BuildingsRoute
+  '/buildings': typeof BuildingsRouteWithChildren
   '/search': typeof SearchRoute
+  '/sell': typeof SellRoute
+  '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
+  '/buildings/': typeof BuildingsIndexRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/buildings': typeof BuildingsRoute
   '/search': typeof SearchRoute
+  '/sell': typeof SellRoute
+  '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
+  '/buildings': typeof BuildingsIndexRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRoutesById {
@@ -74,9 +97,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/buildings': typeof BuildingsRoute
+  '/buildings': typeof BuildingsRouteWithChildren
   '/search': typeof SearchRoute
+  '/sell': typeof SellRoute
+  '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
+  '/buildings/': typeof BuildingsIndexRoute
   '/_authenticated/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRouteTypes {
@@ -86,15 +112,20 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/search'
+    | '/sell'
+    | '/buildings/$slug'
     | '/property/$id'
+    | '/buildings/'
     | '/admin/trestle'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
-    | '/buildings'
     | '/search'
+    | '/sell'
+    | '/buildings/$slug'
     | '/property/$id'
+    | '/buildings'
     | '/admin/trestle'
   id:
     | '__root__'
@@ -103,7 +134,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/search'
+    | '/sell'
+    | '/buildings/$slug'
     | '/property/$id'
+    | '/buildings/'
     | '/_authenticated/admin/trestle'
   fileRoutesById: FileRoutesById
 }
@@ -111,8 +145,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-  BuildingsRoute: typeof BuildingsRoute
+  BuildingsRoute: typeof BuildingsRouteWithChildren
   SearchRoute: typeof SearchRoute
+  SellRoute: typeof SellRoute
   PropertyIdRoute: typeof PropertyIdRoute
 }
 
@@ -153,6 +188,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sell': {
+      id: '/sell'
+      path: '/sell'
+      fullPath: '/sell'
+      preLoaderRoute: typeof SellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buildings/': {
+      id: '/buildings/'
+      path: '/'
+      fullPath: '/buildings/'
+      preLoaderRoute: typeof BuildingsIndexRouteImport
+      parentRoute: typeof BuildingsRoute
+    }
+    '/buildings/$slug': {
+      id: '/buildings/$slug'
+      path: '/$slug'
+      fullPath: '/buildings/$slug'
+      preLoaderRoute: typeof BuildingsSlugRouteImport
+      parentRoute: typeof BuildingsRoute
+    }
     '/property/$id': {
       id: '/property/$id'
       path: '/property/$id'
@@ -181,12 +237,27 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface BuildingsRouteChildren {
+  BuildingsSlugRoute: typeof BuildingsSlugRoute
+  BuildingsIndexRoute: typeof BuildingsIndexRoute
+}
+
+const BuildingsRouteChildren: BuildingsRouteChildren = {
+  BuildingsSlugRoute: BuildingsSlugRoute,
+  BuildingsIndexRoute: BuildingsIndexRoute,
+}
+
+const BuildingsRouteWithChildren = BuildingsRoute._addFileChildren(
+  BuildingsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
-  BuildingsRoute: BuildingsRoute,
+  BuildingsRoute: BuildingsRouteWithChildren,
   SearchRoute: SearchRoute,
+  SellRoute: SellRoute,
   PropertyIdRoute: PropertyIdRoute,
 }
 export const routeTree = rootRouteImport
