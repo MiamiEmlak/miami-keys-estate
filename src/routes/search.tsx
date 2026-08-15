@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { searchListingsFn } from "@/lib/listings.functions";
 import { PropertyCard } from "@/components/listings/PropertyCard";
+import { PropertyGridSkeleton } from "@/components/listings/Skeletons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -55,8 +56,10 @@ export const Route = createFileRoute("/search")({
         content: "Live Miami MLS search with price, bed and property type filters.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/search" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "/search" }],
   }),
   component: SearchPage,
   errorComponent: ({ error }) => (
@@ -134,19 +137,30 @@ function SearchPage() {
 
   const total = data?.total ?? 0;
   const lastPage = Math.max(1, Math.ceil(total / pageSize));
+  const items = data?.items ?? [];
+  const showSkeleton = isFetching && items.length === 0;
+
+  const resetFilters = () =>
+    navigate({
+      search: {
+        city: "",
+        zip: "",
+        type: "buy",
+        minPrice: 0,
+        maxPrice: 0,
+        beds: 0,
+        baths: 0,
+        propertyType: "",
+        sort: "newest",
+        filter: "",
+        page: 1,
+      },
+    });
 
   return (
-    <main className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <Link to="/" className="brand-mark text-lg text-foreground">
-          Cays
-        </Link>
-        <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground">
-          Sign in
-        </Link>
-      </header>
-
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 pb-20 lg:grid-cols-[17rem_1fr]">
+    <main className="bg-background">
+      <h1 className="sr-only">Miami MLS property search</h1>
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-10 pb-20 lg:grid-cols-[17rem_1fr]">
         <Filters search={search} set={set} />
 
         <section>
@@ -179,23 +193,35 @@ function SearchPage() {
             </p>
           )}
 
-          <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
-            {(data?.items ?? []).map((listing) => (
-              <PropertyCard
-                key={listing.listing_key}
-                listing={listing}
-                compareSelected={compare.includes(listing.listing_key)}
-                onToggleCompare={toggleCompare}
-              />
-            ))}
-          </div>
-
-          {!isFetching && (data?.items.length ?? 0) === 0 && !data?.error && (
-            <p className="mt-16 text-center text-sm text-muted-foreground">
-              No listings match these filters.
-            </p>
+          {showSkeleton ? (
+            <PropertyGridSkeleton count={6} />
+          ) : (
+            <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+              {items.map((listing) => (
+                <PropertyCard
+                  key={listing.listing_key}
+                  listing={listing}
+                  compareSelected={compare.includes(listing.listing_key)}
+                  onToggleCompare={toggleCompare}
+                />
+              ))}
+            </div>
           )}
 
+          {!isFetching && items.length === 0 && !data?.error && (
+            <div className="mt-16 rounded-sm border border-dashed border-border p-12 text-center">
+              <p className="font-display text-2xl text-foreground">No listings match these filters</p>
+              <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
+                Try widening your price range, removing the ZIP code, or lowering the bed and bath
+                minimums.
+              </p>
+              <Button className="mt-6" onClick={resetFilters}>
+                Reset filters
+              </Button>
+            </div>
+          )}
+
+          {items.length > 0 && (
           <div className="mt-12 flex items-center justify-between">
             <Button
               variant="outline"
@@ -215,6 +241,7 @@ function SearchPage() {
               Next
             </Button>
           </div>
+          )}
         </section>
       </div>
 

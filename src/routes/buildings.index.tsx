@@ -2,8 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { Building2, ImageOff } from "lucide-react";
 import { getBuildingDirectoryFn } from "@/lib/buildings.functions";
+import { ListingImage } from "@/components/listings/ListingImage";
+import { BuildingCardSkeleton } from "@/components/listings/Skeletons";
 import { BUILDINGS, NEIGHBORHOODS, PRICE_TIERS } from "@/lib/buildings";
 import { money, num } from "@/lib/format";
 import { Input } from "@/components/ui/input";
@@ -24,8 +25,10 @@ export const Route = createFileRoute("/buildings/")({
         content: "Luxury Miami towers with live active listing counts and $/sq ft data.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/buildings" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "/buildings" }],
   }),
   component: BuildingsDirectory,
 });
@@ -61,16 +64,7 @@ function BuildingsDirectory() {
   });
 
   return (
-    <main className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <Link to="/" className="brand-mark text-lg text-foreground">
-          Cays
-        </Link>
-        <Link to="/search" search={{}} className="text-sm text-muted-foreground hover:text-foreground">
-          Search listings
-        </Link>
-      </header>
-
+    <main className="bg-background">
       <section className="mx-auto max-w-7xl px-6 pb-8 pt-8">
         <p className="eyebrow text-muted-foreground">Building intelligence</p>
         <h1 className="mt-5 max-w-3xl font-display text-5xl leading-tight text-foreground sm:text-6xl">
@@ -129,7 +123,15 @@ function BuildingsDirectory() {
           {isFetching ? "Loading live building data…" : `${buildings.length} towers`}
         </p>
 
-        <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+        {isFetching && (
+          <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3" aria-hidden>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <BuildingCardSkeleton key={i} />
+            ))}
+          </div>
+        )}
+
+        <div className={`mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3 ${isFetching ? "hidden" : ""}`}>
           {buildings.map((b) => {
             const s = statsBySlug[b.slug];
             return (
@@ -139,18 +141,11 @@ function BuildingsDirectory() {
               >
                 <Link to="/buildings/$slug" params={{ slug: b.slug }} className="block">
                   <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
-                    {s?.photo ? (
-                      <img
-                        src={s.photo}
-                        alt={`${b.name} in ${b.neighborhood}, Miami`}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                        {isFetching ? <Building2 className="h-6 w-6" /> : <ImageOff className="h-6 w-6" />}
-                      </div>
-                    )}
+                    <ListingImage
+                      src={s?.photo}
+                      alt={`${b.name} in ${b.neighborhood}, Miami`}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    />
                     {s?.avgPpsf ? (
                       <span className="absolute left-3 top-3 rounded-sm bg-primary/90 px-2 py-1 text-[10px] uppercase tracking-widest text-primary-foreground">
                         Avg {money(s.avgPpsf)}/sq ft

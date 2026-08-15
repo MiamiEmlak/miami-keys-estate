@@ -23,8 +23,10 @@ export const Route = createFileRoute("/sell")({
         content: "Get a market-backed valuation of your Miami property from a Cays advisor.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/sell" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "/sell" }],
   }),
   component: SellPage,
 });
@@ -73,16 +75,7 @@ function SellPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <Link to="/" className="brand-mark text-lg text-foreground">
-          Cays
-        </Link>
-        <Link to="/search" search={{}} className="text-sm text-muted-foreground hover:text-foreground">
-          Search listings
-        </Link>
-      </header>
-
+    <main className="bg-background">
       <section className="mx-auto max-w-3xl px-6 pb-24 pt-10">
         <p className="eyebrow text-muted-foreground">Sell with Cays</p>
         <h1 className="mt-5 font-display text-5xl leading-tight text-foreground">
