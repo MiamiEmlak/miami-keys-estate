@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as AuthenticatedAdminTrestleRouteImport } from './routes/_authenticated/admin/trestle'
 
@@ -41,6 +42,11 @@ const SearchRoute = SearchRouteImport.update({
   path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BuildingsIndexRoute = BuildingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BuildingsRoute,
+} as any)
 const PropertyIdRoute = PropertyIdRouteImport.update({
   id: '/property/$id',
   path: '/property/$id',
@@ -56,17 +62,18 @@ const AuthenticatedAdminTrestleRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/buildings': typeof BuildingsRoute
+  '/buildings': typeof BuildingsRouteWithChildren
   '/search': typeof SearchRoute
   '/property/$id': typeof PropertyIdRoute
+  '/buildings/': typeof BuildingsIndexRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/buildings': typeof BuildingsRoute
   '/search': typeof SearchRoute
   '/property/$id': typeof PropertyIdRoute
+  '/buildings': typeof BuildingsIndexRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRoutesById {
@@ -74,9 +81,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/buildings': typeof BuildingsRoute
+  '/buildings': typeof BuildingsRouteWithChildren
   '/search': typeof SearchRoute
   '/property/$id': typeof PropertyIdRoute
+  '/buildings/': typeof BuildingsIndexRoute
   '/_authenticated/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRouteTypes {
@@ -87,14 +95,15 @@ export interface FileRouteTypes {
     | '/buildings'
     | '/search'
     | '/property/$id'
+    | '/buildings/'
     | '/admin/trestle'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
-    | '/buildings'
     | '/search'
     | '/property/$id'
+    | '/buildings'
     | '/admin/trestle'
   id:
     | '__root__'
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
     | '/buildings'
     | '/search'
     | '/property/$id'
+    | '/buildings/'
     | '/_authenticated/admin/trestle'
   fileRoutesById: FileRoutesById
 }
@@ -111,7 +121,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-  BuildingsRoute: typeof BuildingsRoute
+  BuildingsRoute: typeof BuildingsRouteWithChildren
   SearchRoute: typeof SearchRoute
   PropertyIdRoute: typeof PropertyIdRoute
 }
@@ -153,6 +163,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/buildings/': {
+      id: '/buildings/'
+      path: '/'
+      fullPath: '/buildings/'
+      preLoaderRoute: typeof BuildingsIndexRouteImport
+      parentRoute: typeof BuildingsRoute
+    }
     '/property/$id': {
       id: '/property/$id'
       path: '/property/$id'
@@ -181,11 +198,23 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface BuildingsRouteChildren {
+  BuildingsIndexRoute: typeof BuildingsIndexRoute
+}
+
+const BuildingsRouteChildren: BuildingsRouteChildren = {
+  BuildingsIndexRoute: BuildingsIndexRoute,
+}
+
+const BuildingsRouteWithChildren = BuildingsRoute._addFileChildren(
+  BuildingsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
-  BuildingsRoute: BuildingsRoute,
+  BuildingsRoute: BuildingsRouteWithChildren,
   SearchRoute: SearchRoute,
   PropertyIdRoute: PropertyIdRoute,
 }
