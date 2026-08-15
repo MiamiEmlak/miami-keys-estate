@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as SellRouteImport } from './routes/sell'
 import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
 import { Route as BuildingsSlugRouteImport } from './routes/buildings.$slug'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
@@ -43,6 +44,11 @@ const SearchRoute = SearchRouteImport.update({
   path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SellRoute = SellRouteImport.update({
+  id: '/sell',
+  path: '/sell',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BuildingsIndexRoute = BuildingsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/search': typeof SearchRoute
+  '/sell': typeof SellRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/search': typeof SearchRoute
+  '/sell': typeof SellRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings': typeof BuildingsIndexRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/search': typeof SearchRoute
+  '/sell': typeof SellRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/search'
+    | '/sell'
     | '/buildings/$slug'
     | '/property/$id'
     | '/buildings/'
@@ -112,6 +122,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/search'
+    | '/sell'
     | '/buildings/$slug'
     | '/property/$id'
     | '/buildings'
@@ -123,6 +134,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/search'
+    | '/sell'
     | '/buildings/$slug'
     | '/property/$id'
     | '/buildings/'
@@ -135,6 +147,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BuildingsRoute: typeof BuildingsRouteWithChildren
   SearchRoute: typeof SearchRoute
+  SellRoute: typeof SellRoute
   PropertyIdRoute: typeof PropertyIdRoute
 }
 
@@ -173,6 +186,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sell': {
+      id: '/sell'
+      path: '/sell'
+      fullPath: '/sell'
+      preLoaderRoute: typeof SellRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/buildings/': {
@@ -237,6 +257,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BuildingsRoute: BuildingsRouteWithChildren,
   SearchRoute: SearchRoute,
+  SellRoute: SellRoute,
   PropertyIdRoute: PropertyIdRoute,
 }
 export const routeTree = rootRouteImport
