@@ -68,7 +68,7 @@ function BuildingProfile() {
   const rentals = units.filter((u) => u.property_type === "ResidentialLease");
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background">
       <div className="mx-auto max-w-7xl px-6 pb-24 pt-10">
         <p className="eyebrow text-muted-foreground">{building.neighborhood}</p>
         <h1 className="mt-4 font-display text-5xl text-foreground">{building.name}</h1>

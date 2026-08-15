@@ -79,7 +79,7 @@ function AskPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background">
       <div className="mx-auto max-w-5xl px-6 pb-28">
         <p className="eyebrow text-muted-foreground">Cays intelligence</p>
         <h1 className="mt-3 flex items-center gap-3 font-display text-5xl text-foreground">

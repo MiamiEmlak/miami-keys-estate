@@ -158,7 +158,7 @@ function SearchPage() {
     });
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background">
       <h1 className="sr-only">Miami MLS property search</h1>
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-10 pb-20 lg:grid-cols-[17rem_1fr]">
         <Filters search={search} set={set} />

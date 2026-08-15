@@ -112,7 +112,7 @@ function ComparePage() {
     : [];
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background">
       <div className="mx-auto max-w-7xl px-6 pb-24">
         <p className="eyebrow text-muted-foreground">Comparison matrix</p>
         <h1 className="mt-3 font-display text-5xl text-foreground">Compare properties</h1>

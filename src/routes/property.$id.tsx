@@ -104,7 +104,7 @@ function PropertyPage() {
   const hero = photos[active]?.media_url ?? photos[0]?.media_url ?? null;
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background">
       <div className="mx-auto max-w-7xl px-6 py-8 pb-20">
         <div className="overflow-hidden rounded-sm bg-secondary">
           <ListingImage

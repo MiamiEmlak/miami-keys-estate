@@ -75,7 +75,7 @@ function SellPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background">
       <section className="mx-auto max-w-3xl px-6 pb-24 pt-10">
         <p className="eyebrow text-muted-foreground">Sell with Cays</p>
         <h1 className="mt-5 font-display text-5xl leading-tight text-foreground">

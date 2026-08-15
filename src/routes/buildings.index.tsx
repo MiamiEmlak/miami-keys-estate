@@ -64,7 +64,7 @@ function BuildingsDirectory() {
   });
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background">
       <section className="mx-auto max-w-7xl px-6 pb-8 pt-8">
         <p className="eyebrow text-muted-foreground">Building intelligence</p>
         <h1 className="mt-5 max-w-3xl font-display text-5xl leading-tight text-foreground sm:text-6xl">

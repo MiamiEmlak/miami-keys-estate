@@ -54,7 +54,7 @@ function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background">
       <section className="hero-surface isolate mx-auto mt-8 max-w-6xl overflow-hidden rounded-sm px-6 pb-32 pt-24 text-primary-foreground sm:px-14 sm:pb-40 sm:pt-36">
         <p className="eyebrow text-primary-foreground/60">Miami · Coral Gables · Key Biscayne</p>
         <h1 className="mt-8 max-w-3xl font-display text-5xl leading-[1.05] sm:text-7xl">
