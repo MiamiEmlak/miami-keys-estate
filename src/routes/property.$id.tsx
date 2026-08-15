@@ -6,28 +6,58 @@ import { toast } from "sonner";
 import { Bell, Heart } from "lucide-react";
 import { getListingFn, saveListingFn } from "@/lib/listings.functions";
 import { money, num, perSqFt, fullAddress } from "@/lib/format";
+import { ListingImage } from "@/components/listings/ListingImage";
+import { DetailSkeleton } from "@/components/listings/Skeletons";
 import { Button } from "@/components/ui/button";
 import { ScheduleShowingDialog } from "@/components/leads/ScheduleShowingDialog";
 import { InvestmentCalculator } from "@/components/investment/InvestmentCalculator";
 
+const listingQuery = (id: string) => ({
+  queryKey: ["listing", id],
+  queryFn: () => getListingFn({ data: { listingKey: id } }),
+});
+
 export const Route = createFileRoute("/property/$id")({
-  head: () => ({
-    meta: [
-      { title: "Property Detail | Cays Realty" },
-      {
-        name: "description",
-        content:
-          "Live MLS listing detail — photos, pricing, specs and features for Miami luxury real estate.",
-      },
-      { property: "og:title", content: "Property Detail | Cays Realty" },
-      {
-        property: "og:description",
-        content: "Live MLS listing detail for Miami luxury real estate.",
-      },
-      { property: "og:type", content: "article" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  loader: ({ params, context }) => context.queryClient.ensureQueryData(listingQuery(params.id)),
+  head: ({ params, loaderData }) => {
+    const canonical = `/property/${params.id}`;
+    const p = loaderData?.listing;
+    if (!p) {
+      return {
+        meta: [
+          { title: "Listing unavailable | Cays Realty" },
+          { name: "robots", content: "noindex" },
+        ],
+        links: [{ rel: "canonical", href: canonical }],
+      };
+    }
+    const address = fullAddress(p) || "Miami property";
+    const title = `${address} | Cays Real Estate`;
+    const description = `${money(p.list_price)} · ${num(p.bedrooms_total)} bed, ${num(
+      p.bathrooms_total,
+    )} bath ${p.property_sub_type ?? p.property_type ?? "home"} in ${
+      p.city ?? "Miami"
+    } — ${num(p.living_area)} sq ft, live MLS listing detail from Cays Realty.`;
+    const photo = loaderData?.media?.find((m) => m.media_url)?.media_url ?? null;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: canonical },
+        ...(photo
+          ? [
+              { property: "og:image", content: photo },
+              { name: "twitter:image", content: photo },
+            ]
+          : []),
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: canonical }],
+    };
+  },
   component: PropertyPage,
   errorComponent: ({ error }) => (
     <div role="alert" className="p-10 text-sm text-muted-foreground">
@@ -52,15 +82,11 @@ const FEATURE_LABELS: Record<string, string> = {
 
 function PropertyPage() {
   const { id } = Route.useParams();
-  const getListing = useServerFn(getListingFn);
-  const { data, isLoading } = useQuery({
-    queryKey: ["listing", id],
-    queryFn: () => getListing({ data: { listingKey: id } }),
-  });
+  const { data, isLoading } = useQuery(listingQuery(id));
   const [active, setActive] = useState(0);
 
   if (isLoading) {
-    return <div className="p-16 text-center text-sm text-muted-foreground">Loading listing…</div>;
+    return <DetailSkeleton />;
   }
   if (!data?.listing) {
     return (
@@ -79,28 +105,14 @@ function PropertyPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <Link to="/" className="brand-mark text-lg text-foreground">
-          Cays
-        </Link>
-        <Link to="/search" search={{}} className="text-sm text-muted-foreground hover:text-foreground">
-          Back to search
-        </Link>
-      </header>
-
-      <div className="mx-auto max-w-7xl px-6 pb-20">
+      <div className="mx-auto max-w-7xl px-6 py-8 pb-20">
         <div className="overflow-hidden rounded-sm bg-secondary">
-          {hero ? (
-            <img
-              src={hero}
-              alt={`${fullAddress(p)} — MLS photo`}
-              className="h-[28rem] w-full object-cover sm:h-[34rem]"
-            />
-          ) : (
-            <div className="flex h-80 items-center justify-center text-muted-foreground">
-              No photos provided by the MLS
-            </div>
-          )}
+          <ListingImage
+            src={hero}
+            alt={`${fullAddress(p)} — MLS photo`}
+            loading="eager"
+            className="h-[20rem] w-full object-cover sm:h-[34rem]"
+          />
         </div>
         {photos.length > 1 && (
           <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
@@ -114,7 +126,7 @@ function PropertyPage() {
                   i === active ? "border-accent" : "border-border"
                 }`}
               >
-                <img src={m.media_url!} alt="" className="h-full w-full object-cover" loading="lazy" />
+                <ListingImage src={m.media_url} alt="" className="h-full w-full object-cover" />
               </button>
             ))}
           </div>
