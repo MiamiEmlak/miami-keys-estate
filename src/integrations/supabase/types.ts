@@ -14,16 +14,405 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      lead_activity: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          lead_id: string | null
+          listing_key: string | null
+          metadata: Json
+          user_id: string | null
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          listing_key?: string | null
+          metadata?: Json
+          user_id?: string | null
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          listing_key?: string | null
+          metadata?: Json
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activity_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_activity_listing_key_fkey"
+            columns: ["listing_key"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["listing_key"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          lead_type: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          source: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          lead_type?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          lead_type?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      properties: {
+        Row: {
+          association_fee: number | null
+          association_fee_frequency: string | null
+          bathrooms_total: number | null
+          bedrooms_total: number | null
+          city: string | null
+          close_date: string | null
+          close_price: number | null
+          created_at: string
+          description: string | null
+          latitude: number | null
+          list_agent_id: string | null
+          list_office_id: string | null
+          list_price: number | null
+          listing_contract_date: string | null
+          listing_id: string | null
+          listing_key: string
+          living_area: number | null
+          longitude: number | null
+          lot_size: number | null
+          modification_timestamp: string | null
+          original_list_price: number | null
+          postal_code: string | null
+          previous_list_price: number | null
+          property_sub_type: string | null
+          property_type: string | null
+          raw_mls: Json | null
+          standard_status: string | null
+          state: string | null
+          street_address: string | null
+          tax_annual_amount: number | null
+          updated_at: string
+          year_built: number | null
+        }
+        Insert: {
+          association_fee?: number | null
+          association_fee_frequency?: string | null
+          bathrooms_total?: number | null
+          bedrooms_total?: number | null
+          city?: string | null
+          close_date?: string | null
+          close_price?: number | null
+          created_at?: string
+          description?: string | null
+          latitude?: number | null
+          list_agent_id?: string | null
+          list_office_id?: string | null
+          list_price?: number | null
+          listing_contract_date?: string | null
+          listing_id?: string | null
+          listing_key: string
+          living_area?: number | null
+          longitude?: number | null
+          lot_size?: number | null
+          modification_timestamp?: string | null
+          original_list_price?: number | null
+          postal_code?: string | null
+          previous_list_price?: number | null
+          property_sub_type?: string | null
+          property_type?: string | null
+          raw_mls?: Json | null
+          standard_status?: string | null
+          state?: string | null
+          street_address?: string | null
+          tax_annual_amount?: number | null
+          updated_at?: string
+          year_built?: number | null
+        }
+        Update: {
+          association_fee?: number | null
+          association_fee_frequency?: string | null
+          bathrooms_total?: number | null
+          bedrooms_total?: number | null
+          city?: string | null
+          close_date?: string | null
+          close_price?: number | null
+          created_at?: string
+          description?: string | null
+          latitude?: number | null
+          list_agent_id?: string | null
+          list_office_id?: string | null
+          list_price?: number | null
+          listing_contract_date?: string | null
+          listing_id?: string | null
+          listing_key?: string
+          living_area?: number | null
+          longitude?: number | null
+          lot_size?: number | null
+          modification_timestamp?: string | null
+          original_list_price?: number | null
+          postal_code?: string | null
+          previous_list_price?: number | null
+          property_sub_type?: string | null
+          property_type?: string | null
+          raw_mls?: Json | null
+          standard_status?: string | null
+          state?: string | null
+          street_address?: string | null
+          tax_annual_amount?: number | null
+          updated_at?: string
+          year_built?: number | null
+        }
+        Relationships: []
+      }
+      property_media: {
+        Row: {
+          created_at: string
+          listing_key: string
+          media_category: string | null
+          media_key: string
+          media_type: string | null
+          media_url: string
+          modification_timestamp: string | null
+          order_number: number | null
+          short_description: string | null
+        }
+        Insert: {
+          created_at?: string
+          listing_key: string
+          media_category?: string | null
+          media_key: string
+          media_type?: string | null
+          media_url: string
+          modification_timestamp?: string | null
+          order_number?: number | null
+          short_description?: string | null
+        }
+        Update: {
+          created_at?: string
+          listing_key?: string
+          media_category?: string | null
+          media_key?: string
+          media_type?: string | null
+          media_url?: string
+          modification_timestamp?: string | null
+          order_number?: number | null
+          short_description?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_media_listing_key_fkey"
+            columns: ["listing_key"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["listing_key"]
+          },
+        ]
+      }
+      property_watches: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          listing_key: string | null
+          user_id: string
+          watch_type: string
+          watch_value: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          listing_key?: string | null
+          user_id: string
+          watch_type: string
+          watch_value: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          listing_key?: string | null
+          user_id?: string
+          watch_type?: string
+          watch_value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_watches_listing_key_fkey"
+            columns: ["listing_key"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["listing_key"]
+          },
+        ]
+      }
+      saved_properties: {
+        Row: {
+          created_at: string
+          id: string
+          listing_key: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          listing_key: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          listing_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_properties_listing_key_fkey"
+            columns: ["listing_key"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["listing_key"]
+          },
+        ]
+      }
+      saved_searches: {
+        Row: {
+          active: boolean
+          alert_frequency: string
+          created_at: string
+          criteria: Json
+          id: string
+          search_name: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          alert_frequency?: string
+          created_at?: string
+          criteria?: Json
+          id?: string
+          search_name: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          alert_frequency?: string
+          created_at?: string
+          criteria?: Json
+          id?: string
+          search_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "agent" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +539,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "agent", "user"],
+    },
   },
 } as const
