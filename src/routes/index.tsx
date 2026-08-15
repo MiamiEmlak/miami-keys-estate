@@ -99,7 +99,7 @@ function Home() {
               <button
                 key={value}
                 type="button"
-                onClick={() => setType(value)}
+                onClick={() => setType(value as string)}
                 className={`rounded-sm border px-5 py-2 text-xs uppercase tracking-widest transition-colors ${
                   type === value
                     ? "border-primary bg-primary text-primary-foreground"
