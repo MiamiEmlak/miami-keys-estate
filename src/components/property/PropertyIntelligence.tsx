@@ -74,10 +74,11 @@ export function PropertyIntelligence({
       <h2 className="font-display text-3xl text-foreground">Property intelligence</h2>
 
       <Tabs defaultValue="media" className="mt-6">
-        <TabsList className="grid w-full grid-cols-3 sm:inline-flex sm:w-auto">
+        <TabsList className="grid w-full grid-cols-2 sm:inline-flex sm:w-auto">
           <TabsTrigger value="media">Media</TabsTrigger>
           <TabsTrigger value="architecture">Architecture</TabsTrigger>
-          <TabsTrigger value="hoa">HOA</TabsTrigger>
+          <TabsTrigger value="hoa">HOA Fees</TabsTrigger>
+          <TabsTrigger value="management">Building Management</TabsTrigger>
         </TabsList>
 
         <TabsContent value="media" className="mt-6 space-y-8">
@@ -163,9 +164,14 @@ export function PropertyIntelligence({
             <div className="rounded-sm border border-border bg-card p-4 sm:col-span-2">
               <dt className="text-xs uppercase tracking-widest text-muted-foreground">Inclusions</dt>
               <dd className="mt-2 text-sm text-foreground">
-                {[...inclusions, ...amenities].length ? [...inclusions, ...amenities].join(" · ") : "—"}
+                {inclusions.length ? inclusions.join(" · ") : "—"}
               </dd>
             </div>
+          </dl>
+        </TabsContent>
+
+        <TabsContent value="management" className="mt-6">
+          <dl className="grid gap-6 sm:grid-cols-2">
             <div className="rounded-sm border border-border bg-card p-4 sm:col-span-2">
               <dt className="text-xs uppercase tracking-widest text-muted-foreground">
                 Management contact
@@ -173,6 +179,14 @@ export function PropertyIntelligence({
               <dd className="mt-2 text-sm text-foreground">
                 {extras.association_name || "Association details on request"}
                 {extras.association_phone ? ` · ${extras.association_phone}` : ""}
+              </dd>
+            </div>
+            <div className="rounded-sm border border-border bg-card p-4 sm:col-span-2">
+              <dt className="text-xs uppercase tracking-widest text-muted-foreground">
+                Building amenities
+              </dt>
+              <dd className="mt-2 text-sm text-foreground">
+                {amenities.length ? amenities.join(" · ") : "—"}
               </dd>
             </div>
           </dl>
