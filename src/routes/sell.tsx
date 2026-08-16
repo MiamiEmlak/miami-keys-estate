@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { submitEspoLead } from "@/services/espocrm";
+import { submitEspoLead } from "@/services/espoCrm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
