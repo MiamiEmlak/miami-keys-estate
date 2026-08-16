@@ -81,17 +81,6 @@ function SellPage() {
     }
     toast.success("Valuation request received.");
     setSent(true);
-    setForm({
-      address: "",
-      unit: "",
-      beds: "",
-      baths: "",
-      condition: CONDITIONS[0]!,
-      name: "",
-      email: "",
-      phone: "",
-      notes: "",
-    });
   }
 
   return (
