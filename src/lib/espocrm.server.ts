@@ -1,9 +1,9 @@
 export type EspoLeadPayload = {
   name: string;
-  email?: string;
-  phone?: string;
-  source?: string;
-  description?: string;
+  email?: string | undefined;
+  phone?: string | undefined;
+  source?: string | undefined;
+  description?: string | undefined;
 };
 
 export async function createEspoLead(payload: EspoLeadPayload) {
