@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { CalendarCheck, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { submitEspoLead } from "@/services/espocrm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -54,13 +55,21 @@ export function ScheduleShowingDialog({
       return;
     }
     setBusy(true);
+    const notes = `${tour === "virtual" ? "Virtual tour" : "In-person showing"} for ${address} (MLS ${listingKey}) on ${date} at ${slot}. Preferred contact: ${details.contact}.`;
     const { error } = await supabase.from("leads").insert({
       name: details.name,
       email: details.email,
       phone: details.phone,
       lead_type: "showing_request",
       source: "property_detail_modal",
-      notes: `${tour === "virtual" ? "Virtual tour" : "In-person showing"} for ${address} (MLS ${listingKey}) on ${date} at ${slot}. Preferred contact: ${details.contact}.`,
+      notes,
+    });
+    await submitEspoLead({
+      name: details.name,
+      email: details.email,
+      phone: details.phone,
+      source: "Web Site",
+      description: notes,
     });
     setBusy(false);
     if (error) {

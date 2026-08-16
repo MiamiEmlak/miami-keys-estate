@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { submitEspoLead } from "@/services/espocrm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -57,13 +58,21 @@ function SellPage() {
       return;
     }
     setBusy(true);
+    const notes = `Valuation request — ${form.address}${form.unit ? ` #${form.unit}` : ""}; ${form.beds || "?"} bd / ${form.baths || "?"} ba; condition: ${form.condition}.${form.notes ? ` Notes: ${form.notes}` : ""}`;
     const { error } = await supabase.from("leads").insert({
       name: form.name,
       email: form.email,
       phone: form.phone,
       lead_type: "home_valuation",
       source: "sell_page",
-      notes: `Valuation request — ${form.address}${form.unit ? ` #${form.unit}` : ""}; ${form.beds || "?"} bd / ${form.baths || "?"} ba; condition: ${form.condition}.${form.notes ? ` Notes: ${form.notes}` : ""}`,
+      notes,
+    });
+    await submitEspoLead({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      source: "Web Site",
+      description: notes,
     });
     setBusy(false);
     if (error) {
@@ -72,6 +81,17 @@ function SellPage() {
     }
     toast.success("Valuation request received.");
     setSent(true);
+    setForm({
+      address: "",
+      unit: "",
+      beds: "",
+      baths: "",
+      condition: CONDITIONS[0]!,
+      name: "",
+      email: "",
+      phone: "",
+      notes: "",
+    });
   }
 
   return (
