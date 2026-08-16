@@ -161,7 +161,21 @@ export async function getListingDetail(listingKey: string) {
         exterior: list(raw["ExteriorFeatures"]),
         pool: list(raw["PoolFeatures"]),
         flooring: list(raw["Flooring"]),
+        roof: list(raw["Roof"]),
+        construction: list(raw["ConstructionMaterials"]),
+        security: list(raw["SecurityFeatures"]),
+        spa: list(raw["SpaFeatures"]),
+        association_amenities: list(raw["AssociationAmenities"]),
+        association_fee_includes: list(raw["AssociationFeeIncludes"]),
       } as Record<string, string[]>,
+      extras: {
+        virtual_tour_url:
+          (raw["VirtualTourURLBranded"] as string | null) ??
+          (raw["VirtualTourURLUnbranded"] as string | null) ??
+          null,
+        association_name: (raw["AssociationName"] as string | null) ?? null,
+        association_phone: (raw["AssociationPhone"] as string | null) ?? null,
+      },
       error: null as string | null,
     };
   } catch (error) {
@@ -170,6 +184,11 @@ export async function getListingDetail(listingKey: string) {
       listing: null,
       media: [] as ReturnType<typeof normalizeMedia>[],
       features: {} as Record<string, string[]>,
+      extras: {
+        virtual_tour_url: null as string | null,
+        association_name: null as string | null,
+        association_phone: null as string | null,
+      },
       error: error instanceof Error ? error.message : "MLS request failed",
     };
   }
