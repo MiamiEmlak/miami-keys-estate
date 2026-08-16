@@ -119,7 +119,13 @@ export async function searchListings(input: SearchParamsInput) {
 
 export async function getListingDetail(listingKey: string) {
   const { env } = readTrestleEnv();
-  if (!env) return { listing: null, media: [], features: {}, error: "MLS not configured" };
+  const emptyExtras = {
+    virtual_tour_url: null as string | null,
+    association_name: null as string | null,
+    association_phone: null as string | null,
+  };
+  if (!env)
+    return { listing: null, media: [], features: {}, extras: emptyExtras, error: "MLS not configured" };
 
   try {
     const result = await trestleGet(env, "Property", {
@@ -127,7 +133,8 @@ export async function getListingDetail(listingKey: string) {
       $filter: `ListingKey eq '${esc(listingKey)}'`,
     });
     const raw = result.value[0];
-    if (!raw) return { listing: null, media: [], features: {}, error: null as string | null };
+    if (!raw)
+      return { listing: null, media: [], features: {}, extras: emptyExtras, error: null as string | null };
 
     const mediaResult = await trestleGet(env, "Media", {
       $top: "40",
@@ -161,7 +168,21 @@ export async function getListingDetail(listingKey: string) {
         exterior: list(raw["ExteriorFeatures"]),
         pool: list(raw["PoolFeatures"]),
         flooring: list(raw["Flooring"]),
+        roof: list(raw["Roof"]),
+        construction: list(raw["ConstructionMaterials"]),
+        security: list(raw["SecurityFeatures"]),
+        spa: list(raw["SpaFeatures"]),
+        association_amenities: list(raw["AssociationAmenities"]),
+        association_fee_includes: list(raw["AssociationFeeIncludes"]),
       } as Record<string, string[]>,
+      extras: {
+        virtual_tour_url:
+          (raw["VirtualTourURLBranded"] as string | null) ??
+          (raw["VirtualTourURLUnbranded"] as string | null) ??
+          null,
+        association_name: (raw["AssociationName"] as string | null) ?? null,
+        association_phone: (raw["AssociationPhone"] as string | null) ?? null,
+      },
       error: null as string | null,
     };
   } catch (error) {
@@ -170,6 +191,11 @@ export async function getListingDetail(listingKey: string) {
       listing: null,
       media: [] as ReturnType<typeof normalizeMedia>[],
       features: {} as Record<string, string[]>,
+      extras: {
+        virtual_tour_url: null as string | null,
+        association_name: null as string | null,
+        association_phone: null as string | null,
+      },
       error: error instanceof Error ? error.message : "MLS request failed",
     };
   }

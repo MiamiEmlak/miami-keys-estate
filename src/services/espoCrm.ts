@@ -25,17 +25,17 @@ export async function submitEspoLead(input: EspoLeadInput) {
  * ------------------------------------------------------------------ */
 
 export type EspoLeadCapturePayload = {
-  firstName?: string;
+  firstName?: string | undefined;
   lastName: string;
-  email?: string;
-  phoneNumber?: string;
-  leadSource?: string;
-  buyingTimeline?: string;
-  preferredNeighborhoods?: string[];
-  maxBudget?: number;
-  minCapRate?: number;
-  monitoredBuildings?: string[];
-  interactionContext?: string;
+  email?: string | undefined;
+  phoneNumber?: string | undefined;
+  leadSource?: string | undefined;
+  buyingTimeline?: string | undefined;
+  preferredNeighborhoods?: string[] | undefined;
+  maxBudget?: number | undefined;
+  minCapRate?: number | undefined;
+  monitoredBuildings?: string[] | undefined;
+  interactionContext?: string | undefined;
 };
 
 const QUEUE_KEY = "espo:lead-capture:queue";
