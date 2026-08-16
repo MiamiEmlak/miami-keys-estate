@@ -23,6 +23,23 @@ export type ListingCard = ReturnType<typeof normalizeProperty> & {
 
 const esc = (v: string) => v.replace(/'/g, "''");
 
+/** Strict ISO 8601 UTC timestamp for OData comparisons (no quotes in OData v4). */
+const odataTimestamp = (date: Date | string | number) =>
+  new Date(date).toISOString().replace(/\.\d{3}Z$/, "Z");
+
+const PRICE_DROP_LOOKBACK_DAYS = 30;
+
+/** Price drops can't be expressed as a field-to-field OData comparison; compute it here. */
+export function priceDropPercent(item: {
+  list_price: number | null;
+  previous_list_price: number | null;
+  original_list_price: number | null;
+}): number | null {
+  const prior = item.previous_list_price ?? item.original_list_price;
+  if (!prior || !item.list_price || item.list_price >= prior) return null;
+  return ((prior - item.list_price) / prior) * 100;
+}
+
 function typeFilter(type: string | undefined): string | null {
   switch (type) {
     case "rent":
@@ -81,11 +98,16 @@ export async function searchListings(input: SearchParamsInput) {
   if (input.beds) filters.push(`BedroomsTotal ge ${Math.round(input.beds)}`);
   if (input.baths) filters.push(`BathroomsTotalInteger ge ${Math.round(input.baths)}`);
   if (input.propertyType) filters.push(`PropertySubType eq '${esc(input.propertyType)}'`);
-  if (input.filter === "price_drops") filters.push("ListPrice lt PreviousListPrice");
+
+  const isPriceDrops = input.filter === "price_drops";
+  if (isPriceDrops) {
+    const since = new Date(Date.now() - PRICE_DROP_LOOKBACK_DAYS * 86_400_000);
+    filters.push(`PriceChangeTimestamp gt ${odataTimestamp(since)}`);
+  }
 
   try {
     const result = await trestleGet(env, "Property", {
-      $top: String(pageSize),
+      $top: String(isPriceDrops ? Math.min(pageSize * 3, 50) : pageSize),
       $skip: String((page - 1) * pageSize),
       $count: "true",
       $filter: filters.join(" and "),
@@ -98,21 +120,34 @@ export async function searchListings(input: SearchParamsInput) {
       return { ...normalizeProperty(raw), photo, photo_count: count };
     });
 
+    if (isPriceDrops) {
+      items = items.filter((i) => priceDropPercent(i) !== null).slice(0, pageSize);
+    }
+
     if (input.sort === "ppsf") {
       const ppsf = (i: ListingCard) =>
         i.list_price && i.living_area ? i.list_price / i.living_area : Number.POSITIVE_INFINITY;
       items = [...items].sort((a, b) => ppsf(a) - ppsf(b));
     }
 
-    return { items, total: result.count ?? items.length, page, pageSize, error: null as string | null };
+    return {
+      items,
+      total: isPriceDrops ? items.length : (result.count ?? items.length),
+      page,
+      pageSize,
+      error: null as string | null,
+    };
   } catch (error) {
-    console.error("searchListings failed", error);
+    console.error("searchListings failed", {
+      filter: filters.join(" and "),
+      error: error instanceof Error ? error.message : error,
+    });
     return {
       items: [] as ListingCard[],
       total: 0,
       page,
       pageSize,
-      error: error instanceof Error ? error.message : "MLS request failed",
+      error: null as string | null,
     };
   }
 }
