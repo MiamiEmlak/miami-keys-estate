@@ -93,6 +93,7 @@ export async function trestleGet(
     headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
   });
   if (!res.ok) {
+    console.error(`Trestle request failed (${res.status}):`, url.toString());
     throw new Error(`Trestle request failed (${res.status}) for ${path}`);
   }
   const json = (await res.json()) as {
