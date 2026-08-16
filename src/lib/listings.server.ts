@@ -119,7 +119,13 @@ export async function searchListings(input: SearchParamsInput) {
 
 export async function getListingDetail(listingKey: string) {
   const { env } = readTrestleEnv();
-  if (!env) return { listing: null, media: [], features: {}, error: "MLS not configured" };
+  const emptyExtras = {
+    virtual_tour_url: null as string | null,
+    association_name: null as string | null,
+    association_phone: null as string | null,
+  };
+  if (!env)
+    return { listing: null, media: [], features: {}, extras: emptyExtras, error: "MLS not configured" };
 
   try {
     const result = await trestleGet(env, "Property", {
@@ -127,7 +133,8 @@ export async function getListingDetail(listingKey: string) {
       $filter: `ListingKey eq '${esc(listingKey)}'`,
     });
     const raw = result.value[0];
-    if (!raw) return { listing: null, media: [], features: {}, error: null as string | null };
+    if (!raw)
+      return { listing: null, media: [], features: {}, extras: emptyExtras, error: null as string | null };
 
     const mediaResult = await trestleGet(env, "Media", {
       $top: "40",
