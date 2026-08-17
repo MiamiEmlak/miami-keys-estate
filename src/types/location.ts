@@ -38,7 +38,8 @@ export const COUNTIES: CountyEntry[] = [
       { name: "Key Biscayne", neighborhoods: ["Ocean Club", "Village Core"] },
       { name: "Bal Harbour", neighborhoods: ["Bal Harbour Village", "Bay Harbor Islands"] },
       { name: "Doral", neighborhoods: ["Downtown Doral", "Doral Isles"] },
-      { name: "Pinecrest", neighborhoods: ["North Pinecrest", "South Pinecrest"] },
+      { name: "Surfside", neighborhoods: ["Surfside Beach", "Harding Townsite"] },
+      { name: "South Miami", neighborhoods: ["Downtown South Miami", "Snapper Creek"] },
     ],
   },
   {
@@ -46,20 +47,28 @@ export const COUNTIES: CountyEntry[] = [
     cities: [
       { name: "Fort Lauderdale", neighborhoods: ["Las Olas", "Victoria Park", "Rio Vista", "Harbor Beach", "Coral Ridge"] },
       { name: "Hollywood", neighborhoods: ["Hollywood Beach", "Emerald Hills", "Lakes Section"] },
-      { name: "Hallandale Beach", neighborhoods: ["Golden Isles", "Three Islands", "Beachfront"] },
       { name: "Pompano Beach", neighborhoods: ["Pompano Beach Highlands", "Hillsboro Shores"] },
       { name: "Weston", neighborhoods: ["Weston Hills", "Windmill Ranch Estates"] },
       { name: "Parkland", neighborhoods: ["Heron Bay", "Parkland Golf & Country Club"] },
+      { name: "Hallandale Beach", neighborhoods: ["Golden Isles", "Three Islands", "Beachfront"] },
+      { name: "Miramar", neighborhoods: ["Miramar Park", "Riviera Isles", "Silver Lakes"] },
+      { name: "Davie", neighborhoods: ["Long Lake Ranches", "Forest Ridge"] },
+      { name: "Deerfield Beach", neighborhoods: ["Deerfield Beach Oceanfront", "The Cove"] },
+      { name: "Lauderdale-by-the-Sea", neighborhoods: ["Sea Ranch Lakes", "El Mar Drive"] },
     ],
   },
   {
     name: "Palm Beach",
     cities: [
-      { name: "West Palm Beach", neighborhoods: ["Downtown WPB", "El Cid", "Flamingo Park", "Northwood Shores"] },
-      { name: "Palm Beach", neighborhoods: ["Worth Avenue", "North End", "Estate Section"] },
       { name: "Boca Raton", neighborhoods: ["Royal Palm Yacht", "Boca Bridges", "Mizner Park", "The Oaks"] },
       { name: "Delray Beach", neighborhoods: ["Atlantic Avenue", "Seagate", "Lake Ida"] },
+      { name: "Palm Beach", neighborhoods: ["Worth Avenue", "North End", "Estate Section"] },
+      { name: "West Palm Beach", neighborhoods: ["Downtown WPB", "El Cid", "Flamingo Park", "Northwood Shores"] },
       { name: "Jupiter", neighborhoods: ["Admirals Cove", "Abacoa", "Jupiter Island Line"] },
+      { name: "Wellington", neighborhoods: ["Palm Beach Point", "Grand Prix Village", "Olympia"] },
+      { name: "Palm Beach Gardens", neighborhoods: ["BallenIsles", "Old Palm", "Frenchman's Creek"] },
+      { name: "Highland Beach", neighborhoods: ["Bel Lido Isle", "Oceanfront Corridor"] },
+      { name: "Manalapan", neighborhoods: ["Point Manalapan", "Ocean Boulevard"] },
     ],
   },
 ];
@@ -93,4 +102,10 @@ export const MILES_TO_METERS = 1609.344;
 export function geoDistanceFilter(coords: Coords, radiusMiles: number): string {
   const radiusMeters = Math.round(radiusMiles * MILES_TO_METERS);
   return `geo.distance(Coordinates, geography'POINT(${coords.lon} ${coords.lat})') le ${radiusMeters}`;
+}
+
+/** OData filter fragment for an exact city match; null means "All cities". */
+export function cityFilter(city: string): string | null {
+  if (!city) return null;
+  return `City eq '${city.replace(/'/g, "''")}'`;
 }
