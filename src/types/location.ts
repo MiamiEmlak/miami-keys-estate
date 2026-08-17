@@ -46,6 +46,7 @@ export const TRI_COUNTY_DATA: Record<string, CityData[]> = {
     { name: "Doral", neighborhoods: ["Doral Isles", "Downtown Doral"] },
     { name: "Surfside", neighborhoods: ["Harding Ave", "Surfside Waterfront"] },
     { name: "Pinecrest", neighborhoods: ["North Pinecrest", "South Pinecrest"] },
+    { name: "South Miami", neighborhoods: ["Downtown South Miami", "Snapper Creek"] },
   ],
   Broward: [
     {
