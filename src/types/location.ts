@@ -1,111 +1,117 @@
-// South Florida location taxonomy: County -> Cities -> Neighborhoods.
-export type CountyName = "Miami-Dade" | "Broward" | "Palm Beach";
-
-export type CityEntry = {
-  name: string;
-  neighborhoods: string[];
-};
-
-export type CountyEntry = {
-  name: CountyName;
-  cities: CityEntry[];
-};
-
-export const COUNTIES: CountyEntry[] = [
-  {
-    name: "Miami-Dade",
-    cities: [
-      {
-        name: "Miami",
-        neighborhoods: [
-          "Brickell",
-          "Downtown Miami",
-          "Edgewater",
-          "Coconut Grove",
-          "Design District",
-          "Wynwood",
-          "Little Havana",
-          "Coral Way",
-        ],
-      },
-      {
-        name: "Miami Beach",
-        neighborhoods: ["South Beach", "Mid-Beach", "North Beach", "Sunset Islands", "Venetian Islands"],
-      },
-      { name: "Coral Gables", neighborhoods: ["Gables Estates", "Cocoplum", "Downtown Gables", "Gables By The Sea"] },
-      { name: "Aventura", neighborhoods: ["Williams Island", "Porto Vita", "Hallandale Line"] },
-      { name: "Sunny Isles Beach", neighborhoods: ["Golden Shores", "Oceanfront Corridor"] },
-      { name: "Key Biscayne", neighborhoods: ["Ocean Club", "Village Core"] },
-      { name: "Bal Harbour", neighborhoods: ["Bal Harbour Village", "Bay Harbor Islands"] },
-      { name: "Doral", neighborhoods: ["Downtown Doral", "Doral Isles"] },
-      { name: "Surfside", neighborhoods: ["Surfside Beach", "Harding Townsite"] },
-      { name: "South Miami", neighborhoods: ["Downtown South Miami", "Snapper Creek"] },
-    ],
-  },
-  {
-    name: "Broward",
-    cities: [
-      { name: "Fort Lauderdale", neighborhoods: ["Las Olas", "Victoria Park", "Rio Vista", "Harbor Beach", "Coral Ridge"] },
-      { name: "Hollywood", neighborhoods: ["Hollywood Beach", "Emerald Hills", "Lakes Section"] },
-      { name: "Pompano Beach", neighborhoods: ["Pompano Beach Highlands", "Hillsboro Shores"] },
-      { name: "Weston", neighborhoods: ["Weston Hills", "Windmill Ranch Estates"] },
-      { name: "Parkland", neighborhoods: ["Heron Bay", "Parkland Golf & Country Club"] },
-      { name: "Hallandale Beach", neighborhoods: ["Golden Isles", "Three Islands", "Beachfront"] },
-      { name: "Miramar", neighborhoods: ["Miramar Park", "Riviera Isles", "Silver Lakes"] },
-      { name: "Davie", neighborhoods: ["Long Lake Ranches", "Forest Ridge"] },
-      { name: "Deerfield Beach", neighborhoods: ["Deerfield Beach Oceanfront", "The Cove"] },
-      { name: "Lauderdale-by-the-Sea", neighborhoods: ["Sea Ranch Lakes", "El Mar Drive"] },
-    ],
-  },
-  {
-    name: "Palm Beach",
-    cities: [
-      { name: "Boca Raton", neighborhoods: ["Royal Palm Yacht", "Boca Bridges", "Mizner Park", "The Oaks"] },
-      { name: "Delray Beach", neighborhoods: ["Atlantic Avenue", "Seagate", "Lake Ida"] },
-      { name: "Palm Beach", neighborhoods: ["Worth Avenue", "North End", "Estate Section"] },
-      { name: "West Palm Beach", neighborhoods: ["Downtown WPB", "El Cid", "Flamingo Park", "Northwood Shores"] },
-      { name: "Jupiter", neighborhoods: ["Admirals Cove", "Abacoa", "Jupiter Island Line"] },
-      { name: "Wellington", neighborhoods: ["Palm Beach Point", "Grand Prix Village", "Olympia"] },
-      { name: "Palm Beach Gardens", neighborhoods: ["BallenIsles", "Old Palm", "Frenchman's Creek"] },
-      { name: "Highland Beach", neighborhoods: ["Bel Lido Isle", "Oceanfront Corridor"] },
-      { name: "Manalapan", neighborhoods: ["Point Manalapan", "Ocean Boulevard"] },
-    ],
-  },
-];
-
-export const COUNTY_NAMES = COUNTIES.map((c) => c.name);
-
-export function citiesForCounty(county: string): CityEntry[] {
-  if (!county) return COUNTIES.flatMap((c) => c.cities);
-  return COUNTIES.find((c) => c.name === county)?.cities ?? [];
+export interface Coords {
+  lat: number;
+  lon: number;
+  accuracyMeters?: number;
 }
 
-export function neighborhoodsFor(county: string, city: string): string[] {
-  const cities = citiesForCounty(county);
-  if (city) return cities.find((c) => c.name === city)?.neighborhoods ?? [];
-  return Array.from(new Set(cities.flatMap((c) => c.neighborhoods)));
-}
-
-export type Coords = { lat: number; lon: number; accuracyMeters?: number };
-
-export type LocationSelection = {
+export interface LocationSelection {
   county: string;
   city: string;
   neighborhood: string;
   coords: Coords | null;
   radiusMiles: number;
-};
-
-export const MILES_TO_METERS = 1609.344;
-
-/** OData geo filter fragment for a radius search around a point. */
-export function geoDistanceFilter(coords: Coords, radiusMiles: number): string {
-  const radiusMeters = Math.round(radiusMiles * MILES_TO_METERS);
-  return `geo.distance(Coordinates, geography'POINT(${coords.lon} ${coords.lat})') le ${radiusMeters}`;
 }
 
-/** OData filter fragment for an exact city match; null means "All cities". */
+export interface CityData {
+  name: string;
+  neighborhoods: string[];
+}
+
+export const COUNTY_NAMES = ["Miami-Dade", "Broward", "Palm Beach"] as const;
+
+export const TRI_COUNTY_DATA: Record<string, CityData[]> = {
+  "Miami-Dade": [
+    {
+      name: "Miami",
+      neighborhoods: [
+        "Brickell",
+        "Edgewater",
+        "Midtown Miami",
+        "Wynwood",
+        "The Roads",
+        "Little Havana",
+        "Coconut Grove",
+        "Shenandoah",
+      ],
+    },
+    {
+      name: "Miami Beach",
+      neighborhoods: ["South of Fifth", "South Beach", "Mid-Beach", "North Beach", "Venetian Islands", "Star Island"],
+    },
+    { name: "Coral Gables", neighborhoods: ["Cocoplum", "Gables Estates", "Old Cutler Bay", "Downtown Coral Gables"] },
+    { name: "Sunny Isles Beach", neighborhoods: ["Collins Ave Strip", "Golden Shores"] },
+    { name: "Aventura", neighborhoods: ["Williams Island", "Aventura Lakes", "Country Club Drive"] },
+    { name: "Bal Harbour", neighborhoods: ["Bal Harbour Village", "Collins Waterfront"] },
+    { name: "Key Biscayne", neighborhoods: ["Grand Bay", "Ocean Lane", "Crandon"] },
+    { name: "Doral", neighborhoods: ["Doral Isles", "Downtown Doral"] },
+    { name: "Surfside", neighborhoods: ["Harding Ave", "Surfside Waterfront"] },
+    { name: "Pinecrest", neighborhoods: ["North Pinecrest", "South Pinecrest"] },
+  ],
+  Broward: [
+    {
+      name: "Fort Lauderdale",
+      neighborhoods: [
+        "Las Olas",
+        "Victoria Park",
+        "Rio Vista",
+        "Coral Ridge",
+        "Galt Ocean Mile",
+        "Harbor Beach",
+        "Colee Hammock",
+      ],
+    },
+    { name: "Boca Raton South", neighborhoods: ["Royal Palm Yacht Club", "South Beach Pavilion"] },
+    { name: "Hollywood", neighborhoods: ["Hollywood Beach", "Hollywood Lakes", "Emerald Hills"] },
+    { name: "Pompano Beach", neighborhoods: ["Pompano Beach Highlands", "Hillsboro Shores"] },
+    { name: "Hallandale Beach", neighborhoods: ["Diplomat Golf Estates", "Golden Isles"] },
+    { name: "Weston", neighborhoods: ["Weston Hills", "Windmill Ranches"] },
+    { name: "Parkland", neighborhoods: ["Heron Bay", "Parkland Golf & Country Club"] },
+    { name: "Lauderdale-by-the-Sea", neighborhoods: ["Bel Air", "Terra Mar"] },
+    { name: "Davie", neighborhoods: ["Forest Ridge", "Robins Rest"] },
+    { name: "Deerfield Beach", neighborhoods: ["Cove", "Deerfield Beachfront"] },
+  ],
+  "Palm Beach": [
+    {
+      name: "Boca Raton",
+      neighborhoods: ["Royal Palm Yacht & Country Club", "Boca West", "Boca Falls", "Mizner Park"],
+    },
+    { name: "Delray Beach", neighborhoods: ["Atlantic Ave Corridor", "Tropic Isle", "Seagate"] },
+    { name: "Palm Beach", neighborhoods: ["Estate Section", "North End", "Mid-Town"] },
+    { name: "West Palm Beach", neighborhoods: ["El Cid", "Prospect Park", "Downtown WPB", "SoCo"] },
+    { name: "Jupiter", neighborhoods: ["Jupiter Inlet Colony", "Abacoa", "Admiral's Cove"] },
+    { name: "Palm Beach Gardens", neighborhoods: ["PGA National", "Mirasol", "Old Marsh"] },
+    { name: "Wellington", neighborhoods: ["Equestrian Club", "Aero Club", "Palm Beach Point"] },
+    { name: "Highland Beach", neighborhoods: ["Byrd Beach", "Bel Lido"] },
+    { name: "Manalapan", neighborhoods: ["Point Manalapan", "Ocean Ave Strip"] },
+  ],
+};
+
+// Helper: Get all cities for a chosen county or all counties combined
+export function citiesForCounty(county: string): CityData[] {
+  if (!county) {
+    return Object.values(TRI_COUNTY_DATA).flat();
+  }
+  return TRI_COUNTY_DATA[county] || [];
+}
+
+// Helper: Get neighborhoods based on active county and city
+export function neighborhoodsFor(county: string, city: string): string[] {
+  const availableCities = citiesForCounty(county);
+  if (!city) {
+    return availableCities.flatMap((c) => c.neighborhoods);
+  }
+  const match = availableCities.find((c) => c.name.toLowerCase() === city.toLowerCase());
+  return match ? match.neighborhoods : [];
+}
+
+// Helper: Construct OData geo.distance filter string for Trestle RESO API
+export function geoDistanceFilter(coords: Coords, radiusMiles: number): string {
+  const meters = radiusMiles * 1609.344;
+  return `geo.distance(Coordinates, geography'POINT(${coords.lon} ${coords.lat})') le ${meters}`;
+}
+
+// Helper: Construct OData city filter string
 export function cityFilter(city: string): string | null {
   if (!city) return null;
-  return `City eq '${city.replace(/'/g, "''")}'`;
+  return `City eq '${city}'`;
 }
