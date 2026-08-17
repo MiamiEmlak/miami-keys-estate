@@ -8,6 +8,7 @@ import {
   neighborhoodsFor,
   COUNTY_NAMES,
   geoDistanceFilter,
+  cityFilter,
   type Coords,
   type LocationSelection,
 } from "@/types/location";
@@ -16,7 +17,9 @@ export type { LocationSelection } from "@/types/location";
 
 type Props = {
   value?: Partial<LocationSelection>;
-  onChange: (value: LocationSelection & { geoFilter: string | null }) => void;
+  onChange: (
+    value: LocationSelection & { geoFilter: string | null; cityFilter: string | null },
+  ) => void;
   className?: string;
 };
 
@@ -47,6 +50,7 @@ export function LocationBar({ value, onChange, className = "" }: Props) {
     onChange({
       ...next,
       geoFilter: next.coords ? geoDistanceFilter(next.coords, next.radiusMiles) : null,
+      cityFilter: cityFilter(next.city),
     });
   };
 
@@ -159,7 +163,7 @@ export function LocationBar({ value, onChange, className = "" }: Props) {
             value={city}
             onChange={(e) => pickCity(e.target.value)}
           >
-            <option value="">All cities</option>
+            <option value="">All Cities</option>
             {cities.map((c) => (
               <option key={c.name} value={c.name}>
                 {c.name}
