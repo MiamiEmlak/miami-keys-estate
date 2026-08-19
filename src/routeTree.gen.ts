@@ -15,6 +15,7 @@ import { Route as AskRouteImport } from './routes/ask'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as CompareRouteImport } from './routes/compare'
+import { Route as NewProjectsRouteImport } from './routes/new-projects'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SellRouteImport } from './routes/sell'
@@ -51,6 +52,11 @@ const BuildingsRoute = BuildingsRouteImport.update({
 const CompareRoute = CompareRouteImport.update({
   id: '/compare',
   path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewProjectsRoute = NewProjectsRouteImport.update({
+  id: '/new-projects',
+  path: '/new-projects',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
+  '/new-projects': typeof NewProjectsRoute
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByTo {
   '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/compare': typeof CompareRoute
+  '/new-projects': typeof NewProjectsRoute
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
+  '/new-projects': typeof NewProjectsRoute
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/compare'
+    | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/ask'
     | '/auth'
     | '/compare'
+    | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/compare'
+    | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BuildingsRoute: typeof BuildingsRouteWithChildren
   CompareRoute: typeof CompareRoute
+  NewProjectsRoute: typeof NewProjectsRoute
   PrivacyRoute: typeof PrivacyRoute
   SearchRoute: typeof SearchRoute
   SellRoute: typeof SellRoute
@@ -245,6 +258,13 @@ declare module '@tanstack/react-router' {
       path: '/compare'
       fullPath: '/compare'
       preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/new-projects': {
+      id: '/new-projects'
+      path: '/new-projects'
+      fullPath: '/new-projects'
+      preLoaderRoute: typeof NewProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -338,6 +358,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BuildingsRoute: BuildingsRouteWithChildren,
   CompareRoute: CompareRoute,
+  NewProjectsRoute: NewProjectsRoute,
   PrivacyRoute: PrivacyRoute,
   SearchRoute: SearchRoute,
   SellRoute: SellRoute,

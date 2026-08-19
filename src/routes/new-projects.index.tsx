@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export const Route = createFileRoute("/new-projects")({
+export const Route = createFileRoute("/new-projects/")({
   head: () => ({
     meta: [
       { title: "New Developments in Miami — Pre-Construction | Cays Realty" },
