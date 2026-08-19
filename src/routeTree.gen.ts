@@ -15,6 +15,7 @@ import { Route as AskRouteImport } from './routes/ask'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as CompareRouteImport } from './routes/compare'
+import { Route as NewProjectsRouteImport } from './routes/new-projects'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SellRouteImport } from './routes/sell'
@@ -54,6 +55,11 @@ const CompareRoute = CompareRouteImport.update({
   path: '/compare',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewProjectsRoute = NewProjectsRouteImport.update({
+  id: '/new-projects',
+  path: '/new-projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -85,9 +91,9 @@ const BuildingsSlugRoute = BuildingsSlugRouteImport.update({
   getParentRoute: () => BuildingsRoute,
 } as any)
 const NewProjectsIndexRoute = NewProjectsIndexRouteImport.update({
-  id: '/new-projects/',
-  path: '/new-projects/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => NewProjectsRoute,
 } as any)
 const PropertyIdRoute = PropertyIdRouteImport.update({
   id: '/property/$id',
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
+  '/new-projects': typeof NewProjectsRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
@@ -140,6 +147,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
+  '/new-projects': typeof NewProjectsRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
@@ -158,6 +166,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/compare'
+    | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/compare'
+    | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
@@ -208,12 +218,12 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BuildingsRoute: typeof BuildingsRouteWithChildren
   CompareRoute: typeof CompareRoute
+  NewProjectsRoute: typeof NewProjectsRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
   SearchRoute: typeof SearchRoute
   SellRoute: typeof SellRoute
   TermsRoute: typeof TermsRoute
   PropertyIdRoute: typeof PropertyIdRoute
-  NewProjectsIndexRoute: typeof NewProjectsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -260,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompareRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/new-projects': {
+      id: '/new-projects'
+      path: '/new-projects'
+      fullPath: '/new-projects'
+      preLoaderRoute: typeof NewProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -304,10 +321,10 @@ declare module '@tanstack/react-router' {
     }
     '/new-projects/': {
       id: '/new-projects/'
-      path: '/new-projects'
+      path: '/'
       fullPath: '/new-projects/'
       preLoaderRoute: typeof NewProjectsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NewProjectsRoute
     }
     '/property/$id': {
       id: '/property/$id'
@@ -351,6 +368,18 @@ const BuildingsRouteWithChildren = BuildingsRoute._addFileChildren(
   BuildingsRouteChildren,
 )
 
+interface NewProjectsRouteChildren {
+  NewProjectsIndexRoute: typeof NewProjectsIndexRoute
+}
+
+const NewProjectsRouteChildren: NewProjectsRouteChildren = {
+  NewProjectsIndexRoute: NewProjectsIndexRoute,
+}
+
+const NewProjectsRouteWithChildren = NewProjectsRoute._addFileChildren(
+  NewProjectsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -358,12 +387,12 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BuildingsRoute: BuildingsRouteWithChildren,
   CompareRoute: CompareRoute,
+  NewProjectsRoute: NewProjectsRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
   SearchRoute: SearchRoute,
   SellRoute: SellRoute,
   TermsRoute: TermsRoute,
   PropertyIdRoute: PropertyIdRoute,
-  NewProjectsIndexRoute: NewProjectsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
