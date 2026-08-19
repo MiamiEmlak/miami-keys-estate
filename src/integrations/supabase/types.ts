@@ -14,6 +14,135 @@ export type Database = {
   }
   public: {
     Tables: {
+      building_units: {
+        Row: {
+          balcony_sqft: number | null
+          bathrooms: number | null
+          bedrooms: number | null
+          created_at: string
+          development_id: string
+          floor: number | null
+          floor_plan_line: string | null
+          id: string
+          interior_sqft: number | null
+          price: number | null
+          status: string
+          unit_number: string | null
+          view_description: string | null
+        }
+        Insert: {
+          balcony_sqft?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string
+          development_id: string
+          floor?: number | null
+          floor_plan_line?: string | null
+          id?: string
+          interior_sqft?: number | null
+          price?: number | null
+          status?: string
+          unit_number?: string | null
+          view_description?: string | null
+        }
+        Update: {
+          balcony_sqft?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string
+          development_id?: string
+          floor?: number | null
+          floor_plan_line?: string | null
+          id?: string
+          interior_sqft?: number | null
+          price?: number | null
+          status?: string
+          unit_number?: string | null
+          view_description?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "building_units_development_id_fkey"
+            columns: ["development_id"]
+            isOneToOne: false
+            referencedRelation: "new_developments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deposit_schedules: {
+        Row: {
+          created_at: string
+          development_id: string
+          due_label: string | null
+          id: string
+          milestone: string
+          percent: number
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          development_id: string
+          due_label?: string | null
+          id?: string
+          milestone: string
+          percent: number
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          development_id?: string
+          due_label?: string | null
+          id?: string
+          milestone?: string
+          percent?: number
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deposit_schedules_development_id_fkey"
+            columns: ["development_id"]
+            isOneToOne: false
+            referencedRelation: "new_developments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      developer_documents: {
+        Row: {
+          created_at: string
+          development_id: string
+          id: string
+          requires_registration: boolean
+          storage_path: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          development_id: string
+          id?: string
+          requires_registration?: boolean
+          storage_path: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          development_id?: string
+          id?: string
+          requires_registration?: boolean
+          storage_path?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "developer_documents_development_id_fkey"
+            columns: ["development_id"]
+            isOneToOne: false
+            referencedRelation: "new_developments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_activity: {
         Row: {
           activity_type: string
@@ -98,6 +227,57 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      new_developments: {
+        Row: {
+          city: string | null
+          completion_date: string | null
+          created_at: string
+          description: string | null
+          developer_name: string | null
+          hero_image_url: string | null
+          id: string
+          is_published: boolean
+          name: string
+          neighborhood: string | null
+          slug: string
+          starting_price: number | null
+          str_friendly: boolean
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          completion_date?: string | null
+          created_at?: string
+          description?: string | null
+          developer_name?: string | null
+          hero_image_url?: string | null
+          id?: string
+          is_published?: boolean
+          name: string
+          neighborhood?: string | null
+          slug: string
+          starting_price?: number | null
+          str_friendly?: boolean
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          completion_date?: string | null
+          created_at?: string
+          description?: string | null
+          developer_name?: string | null
+          hero_image_url?: string | null
+          id?: string
+          is_published?: boolean
+          name?: string
+          neighborhood?: string | null
+          slug?: string
+          starting_price?: number | null
+          str_friendly?: boolean
+          updated_at?: string
         }
         Relationships: []
       }
