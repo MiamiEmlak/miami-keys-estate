@@ -11,6 +11,7 @@ import { DetailSkeleton } from "@/components/listings/Skeletons";
 import { Button } from "@/components/ui/button";
 import { ScheduleShowingDialog } from "@/components/leads/ScheduleShowingDialog";
 import { InvestmentCalculator } from "@/components/investment/InvestmentCalculator";
+import { DealScoreCard } from "@/components/property/DealScoreCard";
 
 const listingQuery = (id: string) => ({
   queryKey: ["listing", id],
@@ -196,6 +197,7 @@ function PropertyPage() {
           <LeadSidebar listingKey={p.listing_key} address={fullAddress(p)} />
         </div>
 
+        <DealScoreCard listingKey={p.listing_key} />
         <InvestmentCalculator listing={p} />
       </div>
     </main>
