@@ -203,22 +203,24 @@ function AdminNewProjects() {
         <section className="rounded-sm border border-border bg-card p-6">
           <h2 className="font-display text-2xl">1. Create a development</h2>
           <form onSubmit={createDevelopment} className="mt-6 grid gap-4 sm:grid-cols-2">
-            {[
-              ["name", "Project name", "text"],
-              ["developer_name", "Developer", "text"],
-              ["city", "City", "text"],
-              ["neighborhood", "Neighborhood", "text"],
-              ["starting_price", "Starting price", "number"],
-              ["completion_date", "Completion date", "date"],
-              ["hero_image_url", "Hero image URL", "url"],
-            ].map(([key, label, type]) => (
+            {(
+              [
+                ["name", "Project name", "text"],
+                ["developer_name", "Developer", "text"],
+                ["city", "City", "text"],
+                ["neighborhood", "Neighborhood", "text"],
+                ["starting_price", "Starting price", "number"],
+                ["completion_date", "Completion date", "date"],
+                ["hero_image_url", "Hero image URL", "url"],
+              ] as const
+            ).map(([key, label, type]) => (
               <div key={key}>
                 <Label htmlFor={`nd-${key}`}>{label}</Label>
                 <Input
                   id={`nd-${key}`}
                   type={type}
                   required={key === "name"}
-                  value={String(form[key as keyof typeof form] ?? "")}
+                  value={String(form[key] ?? "")}
                   onChange={(e) => setForm({ ...form, [key]: e.target.value })}
                   className="mt-2"
                 />
