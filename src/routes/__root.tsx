@@ -85,17 +85,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Cays Realty — MLS-powered search and private market intelligence for Miami luxury real estate.",
+          "Cays Realty pairs live MLS data with private market intelligence for buyers and owners across Miami's waterfront neighborhoods.",
       },
       { name: "author", content: "Cays Realty" },
       { property: "og:title", content: "Cays | Miami Luxury Real Estate" },
       {
         property: "og:description",
-        content: "MLS-powered search and market intelligence for Miami luxury real estate.",
+        content: "Cays Realty pairs live MLS data with private market intelligence for buyers and owners across Miami's waterfront neighborhoods.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Cays | Miami Luxury Real Estate" },
+      { name: "twitter:description", content: "Cays Realty pairs live MLS data with private market intelligence for buyers and owners across Miami's waterfront neighborhoods." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d158e68eb036557bdc2427015aae8c61/id-preview-bcfbe779--009c61d1-706a-4c0f-99c3-8b1e9b0d05d5.lovable.app-1787127468513.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d158e68eb036557bdc2427015aae8c61/id-preview-bcfbe779--009c61d1-706a-4c0f-99c3-8b1e9b0d05d5.lovable.app-1787127468513.png" },
     ],
     links: [
       {

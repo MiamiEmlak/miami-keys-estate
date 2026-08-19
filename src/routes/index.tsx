@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Cays | Miami Luxury Real Estate" },
       {
         property: "og:description",
-        content: "Live MLS data and private market intelligence for Miami luxury real estate.",
+        content: "Cays Realty pairs live MLS data with private market intelligence for buyers and owners across Miami's waterfront neighborhoods.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
