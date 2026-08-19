@@ -25,6 +25,7 @@ import { Route as BuildingsSlugRouteImport } from './routes/buildings.$slug'
 import { Route as NewProjectsIndexRouteImport } from './routes/new-projects.index'
 import { Route as NewProjectsIdRouteImport } from './routes/new-projects.$id'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
+import { Route as AuthenticatedAdminNewProjectsRouteImport } from './routes/_authenticated/admin/new-projects'
 import { Route as AuthenticatedAdminTrestleRouteImport } from './routes/_authenticated/admin/trestle'
 
 const IndexRoute = IndexRouteImport.update({
@@ -106,6 +107,12 @@ const PropertyIdRoute = PropertyIdRouteImport.update({
   path: '/property/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminNewProjectsRoute =
+  AuthenticatedAdminNewProjectsRouteImport.update({
+    id: '/admin/new-projects',
+    path: '/admin/new-projects',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminTrestleRoute =
   AuthenticatedAdminTrestleRouteImport.update({
     id: '/admin/trestle',
@@ -129,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
   '/new-projects/': typeof NewProjectsIndexRoute
+  '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRoutesByTo {
@@ -145,6 +153,7 @@ export interface FileRoutesByTo {
   '/property/$id': typeof PropertyIdRoute
   '/buildings': typeof BuildingsIndexRoute
   '/new-projects': typeof NewProjectsIndexRoute
+  '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRoutesById {
@@ -165,6 +174,7 @@ export interface FileRoutesById {
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
   '/new-projects/': typeof NewProjectsIndexRoute
+  '/_authenticated/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/_authenticated/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRouteTypes {
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
     | '/property/$id'
     | '/buildings/'
     | '/new-projects/'
+    | '/admin/new-projects'
     | '/admin/trestle'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/property/$id'
     | '/buildings'
     | '/new-projects'
+    | '/admin/new-projects'
     | '/admin/trestle'
   id:
     | '__root__'
@@ -220,6 +232,7 @@ export interface FileRouteTypes {
     | '/property/$id'
     | '/buildings/'
     | '/new-projects/'
+    | '/_authenticated/admin/new-projects'
     | '/_authenticated/admin/trestle'
   fileRoutesById: FileRoutesById
 }
@@ -352,6 +365,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PropertyIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/new-projects': {
+      id: '/_authenticated/admin/new-projects'
+      path: '/admin/new-projects'
+      fullPath: '/admin/new-projects'
+      preLoaderRoute: typeof AuthenticatedAdminNewProjectsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/trestle': {
       id: '/_authenticated/admin/trestle'
       path: '/admin/trestle'
@@ -363,10 +383,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminNewProjectsRoute: typeof AuthenticatedAdminNewProjectsRoute
   AuthenticatedAdminTrestleRoute: typeof AuthenticatedAdminTrestleRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminNewProjectsRoute: AuthenticatedAdminNewProjectsRoute,
   AuthenticatedAdminTrestleRoute: AuthenticatedAdminTrestleRoute,
 }
 
