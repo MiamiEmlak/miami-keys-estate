@@ -15,13 +15,13 @@ import { Route as AskRouteImport } from './routes/ask'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as CompareRouteImport } from './routes/compare'
-import { Route as NewProjectsRouteImport } from './routes/new-projects'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
 import { Route as BuildingsSlugRouteImport } from './routes/buildings.$slug'
+import { Route as NewProjectsIndexRouteImport } from './routes/new-projects.index'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as AuthenticatedAdminTrestleRouteImport } from './routes/_authenticated/admin/trestle'
 
@@ -54,11 +54,6 @@ const CompareRoute = CompareRouteImport.update({
   path: '/compare',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NewProjectsRoute = NewProjectsRouteImport.update({
-  id: '/new-projects',
-  path: '/new-projects',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -89,6 +84,11 @@ const BuildingsSlugRoute = BuildingsSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BuildingsRoute,
 } as any)
+const NewProjectsIndexRoute = NewProjectsIndexRouteImport.update({
+  id: '/new-projects/',
+  path: '/new-projects/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PropertyIdRoute = PropertyIdRouteImport.update({
   id: '/property/$id',
   path: '/property/$id',
@@ -107,7 +107,6 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
-  '/new-projects': typeof NewProjectsRoute
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
@@ -115,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
+  '/new-projects/': typeof NewProjectsIndexRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRoutesByTo {
@@ -122,7 +122,6 @@ export interface FileRoutesByTo {
   '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/compare': typeof CompareRoute
-  '/new-projects': typeof NewProjectsRoute
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
@@ -130,6 +129,7 @@ export interface FileRoutesByTo {
   '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings': typeof BuildingsIndexRoute
+  '/new-projects': typeof NewProjectsIndexRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRoutesById {
@@ -140,7 +140,6 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
-  '/new-projects': typeof NewProjectsRoute
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
@@ -148,6 +147,7 @@ export interface FileRoutesById {
   '/buildings/$slug': typeof BuildingsSlugRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
+  '/new-projects/': typeof NewProjectsIndexRoute
   '/_authenticated/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRouteTypes {
@@ -158,7 +158,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/compare'
-    | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
@@ -166,6 +165,7 @@ export interface FileRouteTypes {
     | '/buildings/$slug'
     | '/property/$id'
     | '/buildings/'
+    | '/new-projects/'
     | '/admin/trestle'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -173,7 +173,6 @@ export interface FileRouteTypes {
     | '/ask'
     | '/auth'
     | '/compare'
-    | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
@@ -181,6 +180,7 @@ export interface FileRouteTypes {
     | '/buildings/$slug'
     | '/property/$id'
     | '/buildings'
+    | '/new-projects'
     | '/admin/trestle'
   id:
     | '__root__'
@@ -190,7 +190,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/compare'
-    | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
@@ -198,6 +197,7 @@ export interface FileRouteTypes {
     | '/buildings/$slug'
     | '/property/$id'
     | '/buildings/'
+    | '/new-projects/'
     | '/_authenticated/admin/trestle'
   fileRoutesById: FileRoutesById
 }
@@ -208,12 +208,12 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BuildingsRoute: typeof BuildingsRouteWithChildren
   CompareRoute: typeof CompareRoute
-  NewProjectsRoute: typeof NewProjectsRoute
   PrivacyRoute: typeof PrivacyRoute
   SearchRoute: typeof SearchRoute
   SellRoute: typeof SellRoute
   TermsRoute: typeof TermsRoute
   PropertyIdRoute: typeof PropertyIdRoute
+  NewProjectsIndexRoute: typeof NewProjectsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -260,13 +260,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompareRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/new-projects': {
-      id: '/new-projects'
-      path: '/new-projects'
-      fullPath: '/new-projects'
-      preLoaderRoute: typeof NewProjectsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -308,6 +301,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/buildings/$slug'
       preLoaderRoute: typeof BuildingsSlugRouteImport
       parentRoute: typeof BuildingsRoute
+    }
+    '/new-projects/': {
+      id: '/new-projects/'
+      path: '/new-projects'
+      fullPath: '/new-projects/'
+      preLoaderRoute: typeof NewProjectsIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/property/$id': {
       id: '/property/$id'
@@ -358,12 +358,12 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BuildingsRoute: BuildingsRouteWithChildren,
   CompareRoute: CompareRoute,
-  NewProjectsRoute: NewProjectsRoute,
   PrivacyRoute: PrivacyRoute,
   SearchRoute: SearchRoute,
   SellRoute: SellRoute,
   TermsRoute: TermsRoute,
   PropertyIdRoute: PropertyIdRoute,
+  NewProjectsIndexRoute: NewProjectsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
