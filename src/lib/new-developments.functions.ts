@@ -52,10 +52,11 @@ export const requestBrochureFn = createServerFn({ method: "POST" })
       return { url: null as string | null, error: "Could not prepare the download link." };
 
     await supabaseAdmin.from("leads").insert({
-      full_name: data.name,
+      name: data.name,
       email: data.email,
       phone: data.phone || null,
       source: "New Development VIP Brochure",
+      lead_type: "pre_construction",
       notes: `Requested "${doc.title}" (pre-construction, HOT)`,
     });
 
