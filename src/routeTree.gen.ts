@@ -15,13 +15,17 @@ import { Route as AskRouteImport } from './routes/ask'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as CompareRouteImport } from './routes/compare'
+import { Route as NewProjectsRouteImport } from './routes/new-projects'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
 import { Route as BuildingsSlugRouteImport } from './routes/buildings.$slug'
+import { Route as NewProjectsIndexRouteImport } from './routes/new-projects.index'
+import { Route as NewProjectsIdRouteImport } from './routes/new-projects.$id'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
+import { Route as AuthenticatedAdminNewProjectsRouteImport } from './routes/_authenticated/admin/new-projects'
 import { Route as AuthenticatedAdminTrestleRouteImport } from './routes/_authenticated/admin/trestle'
 
 const IndexRoute = IndexRouteImport.update({
@@ -51,6 +55,11 @@ const BuildingsRoute = BuildingsRouteImport.update({
 const CompareRoute = CompareRouteImport.update({
   id: '/compare',
   path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewProjectsRoute = NewProjectsRouteImport.update({
+  id: '/new-projects',
+  path: '/new-projects',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -83,11 +92,27 @@ const BuildingsSlugRoute = BuildingsSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BuildingsRoute,
 } as any)
+const NewProjectsIndexRoute = NewProjectsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => NewProjectsRoute,
+} as any)
+const NewProjectsIdRoute = NewProjectsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => NewProjectsRoute,
+} as any)
 const PropertyIdRoute = PropertyIdRouteImport.update({
   id: '/property/$id',
   path: '/property/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminNewProjectsRoute =
+  AuthenticatedAdminNewProjectsRouteImport.update({
+    id: '/admin/new-projects',
+    path: '/admin/new-projects',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminTrestleRoute =
   AuthenticatedAdminTrestleRouteImport.update({
     id: '/admin/trestle',
@@ -101,13 +126,17 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
+  '/new-projects': typeof NewProjectsRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
+  '/new-projects/': typeof NewProjectsIndexRoute
+  '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRoutesByTo {
@@ -120,8 +149,11 @@ export interface FileRoutesByTo {
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings': typeof BuildingsIndexRoute
+  '/new-projects': typeof NewProjectsIndexRoute
+  '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRoutesById {
@@ -132,13 +164,17 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
+  '/new-projects': typeof NewProjectsRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
+  '/new-projects/': typeof NewProjectsIndexRoute
+  '/_authenticated/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/_authenticated/admin/trestle': typeof AuthenticatedAdminTrestleRoute
 }
 export interface FileRouteTypes {
@@ -149,13 +185,17 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/compare'
+    | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/new-projects/$id'
     | '/property/$id'
     | '/buildings/'
+    | '/new-projects/'
+    | '/admin/new-projects'
     | '/admin/trestle'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -168,8 +208,11 @@ export interface FileRouteTypes {
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/new-projects/$id'
     | '/property/$id'
     | '/buildings'
+    | '/new-projects'
+    | '/admin/new-projects'
     | '/admin/trestle'
   id:
     | '__root__'
@@ -179,13 +222,17 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/compare'
+    | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/new-projects/$id'
     | '/property/$id'
     | '/buildings/'
+    | '/new-projects/'
+    | '/_authenticated/admin/new-projects'
     | '/_authenticated/admin/trestle'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +243,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BuildingsRoute: typeof BuildingsRouteWithChildren
   CompareRoute: typeof CompareRoute
+  NewProjectsRoute: typeof NewProjectsRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
   SearchRoute: typeof SearchRoute
   SellRoute: typeof SellRoute
@@ -247,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompareRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/new-projects': {
+      id: '/new-projects'
+      path: '/new-projects'
+      fullPath: '/new-projects'
+      preLoaderRoute: typeof NewProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -289,12 +344,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BuildingsSlugRouteImport
       parentRoute: typeof BuildingsRoute
     }
+    '/new-projects/': {
+      id: '/new-projects/'
+      path: '/'
+      fullPath: '/new-projects/'
+      preLoaderRoute: typeof NewProjectsIndexRouteImport
+      parentRoute: typeof NewProjectsRoute
+    }
+    '/new-projects/$id': {
+      id: '/new-projects/$id'
+      path: '/$id'
+      fullPath: '/new-projects/$id'
+      preLoaderRoute: typeof NewProjectsIdRouteImport
+      parentRoute: typeof NewProjectsRoute
+    }
     '/property/$id': {
       id: '/property/$id'
       path: '/property/$id'
       fullPath: '/property/$id'
       preLoaderRoute: typeof PropertyIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/new-projects': {
+      id: '/_authenticated/admin/new-projects'
+      path: '/admin/new-projects'
+      fullPath: '/admin/new-projects'
+      preLoaderRoute: typeof AuthenticatedAdminNewProjectsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/trestle': {
       id: '/_authenticated/admin/trestle'
@@ -307,10 +383,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminNewProjectsRoute: typeof AuthenticatedAdminNewProjectsRoute
   AuthenticatedAdminTrestleRoute: typeof AuthenticatedAdminTrestleRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminNewProjectsRoute: AuthenticatedAdminNewProjectsRoute,
   AuthenticatedAdminTrestleRoute: AuthenticatedAdminTrestleRoute,
 }
 
@@ -331,6 +409,20 @@ const BuildingsRouteWithChildren = BuildingsRoute._addFileChildren(
   BuildingsRouteChildren,
 )
 
+interface NewProjectsRouteChildren {
+  NewProjectsIdRoute: typeof NewProjectsIdRoute
+  NewProjectsIndexRoute: typeof NewProjectsIndexRoute
+}
+
+const NewProjectsRouteChildren: NewProjectsRouteChildren = {
+  NewProjectsIdRoute: NewProjectsIdRoute,
+  NewProjectsIndexRoute: NewProjectsIndexRoute,
+}
+
+const NewProjectsRouteWithChildren = NewProjectsRoute._addFileChildren(
+  NewProjectsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -338,6 +430,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BuildingsRoute: BuildingsRouteWithChildren,
   CompareRoute: CompareRoute,
+  NewProjectsRoute: NewProjectsRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
   SearchRoute: SearchRoute,
   SellRoute: SellRoute,
