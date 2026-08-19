@@ -23,6 +23,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
 import { Route as BuildingsSlugRouteImport } from './routes/buildings.$slug'
 import { Route as NewProjectsIndexRouteImport } from './routes/new-projects.index'
+import { Route as NewProjectsIdRouteImport } from './routes/new-projects.$id'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as AuthenticatedAdminTrestleRouteImport } from './routes/_authenticated/admin/trestle'
 
@@ -95,6 +96,11 @@ const NewProjectsIndexRoute = NewProjectsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => NewProjectsRoute,
 } as any)
+const NewProjectsIdRoute = NewProjectsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => NewProjectsRoute,
+} as any)
 const PropertyIdRoute = PropertyIdRouteImport.update({
   id: '/property/$id',
   path: '/property/$id',
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
   '/new-projects/': typeof NewProjectsIndexRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings': typeof BuildingsIndexRoute
   '/new-projects': typeof NewProjectsIndexRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
   '/new-projects/': typeof NewProjectsIndexRoute
@@ -172,6 +181,7 @@ export interface FileRouteTypes {
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/new-projects/$id'
     | '/property/$id'
     | '/buildings/'
     | '/new-projects/'
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/new-projects/$id'
     | '/property/$id'
     | '/buildings'
     | '/new-projects'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/new-projects/$id'
     | '/property/$id'
     | '/buildings/'
     | '/new-projects/'
@@ -326,6 +338,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewProjectsIndexRouteImport
       parentRoute: typeof NewProjectsRoute
     }
+    '/new-projects/$id': {
+      id: '/new-projects/$id'
+      path: '/$id'
+      fullPath: '/new-projects/$id'
+      preLoaderRoute: typeof NewProjectsIdRouteImport
+      parentRoute: typeof NewProjectsRoute
+    }
     '/property/$id': {
       id: '/property/$id'
       path: '/property/$id'
@@ -369,10 +388,12 @@ const BuildingsRouteWithChildren = BuildingsRoute._addFileChildren(
 )
 
 interface NewProjectsRouteChildren {
+  NewProjectsIdRoute: typeof NewProjectsIdRoute
   NewProjectsIndexRoute: typeof NewProjectsIndexRoute
 }
 
 const NewProjectsRouteChildren: NewProjectsRouteChildren = {
+  NewProjectsIdRoute: NewProjectsIdRoute,
   NewProjectsIndexRoute: NewProjectsIndexRoute,
 }
 
