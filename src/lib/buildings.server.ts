@@ -8,6 +8,13 @@ export type BuildingStats = MarketStats & {
   avgPrice: number | null;
   avgRent: number | null;
   minPrice: number | null;
+  maxPrice: number | null;
+  minRent: number | null;
+  maxRent: number | null;
+  salePerSqFt: number | null;
+  rentPerSqFt: number | null;
+  saleCount: number;
+  rentCount: number;
   photo: string | null;
 };
 
