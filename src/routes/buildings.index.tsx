@@ -78,13 +78,14 @@ function BuildingsDirectory() {
       <section className="mx-auto max-w-7xl px-6 pb-8 pt-8">
         <p className="eyebrow text-muted-foreground">Building intelligence</p>
         <h1 className="mt-5 max-w-3xl font-display text-5xl leading-tight text-foreground sm:text-6xl">
-          Miami Condo Tower Directory
+          Southeast Florida Luxury Building Directory
         </h1>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          Explore top luxury residential towers, active listings, and market data.
+          Towers from Brickell to Palm Beach Island — live listings for sale and for rent, HOA
+          ranges and price per square foot.
         </p>
 
-        <div className="mt-10 grid gap-4 rounded-sm border border-border bg-card p-6 sm:grid-cols-3">
+        <div className="mt-10 grid gap-4 rounded-sm border border-border bg-card p-6 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Label htmlFor="b-q">Building</Label>
             <Input
@@ -95,6 +96,25 @@ function BuildingsDirectory() {
             />
           </div>
           <div>
+            <Label htmlFor="b-county">County</Label>
+            <select
+              id="b-county"
+              value={county}
+              onChange={(e) => {
+                setCounty(e.target.value);
+                setHood("");
+              }}
+              className="mt-1 h-9 w-full rounded-sm border border-input bg-background px-3 text-sm"
+            >
+              <option value="">All counties</option>
+              {COUNTIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
             <Label htmlFor="b-hood">Neighborhood</Label>
             <select
               id="b-hood"
@@ -103,7 +123,7 @@ function BuildingsDirectory() {
               className="mt-1 h-9 w-full rounded-sm border border-input bg-background px-3 text-sm"
             >
               <option value="">All neighborhoods</option>
-              {NEIGHBORHOODS.map((n) => (
+              {hoodOptions.map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
