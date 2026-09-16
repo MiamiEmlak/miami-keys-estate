@@ -14,16 +14,20 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/buildings/")({
   head: () => ({
     meta: [
-      { title: "Miami Condo Tower Directory | Cays Realty" },
+      { title: "Southeast Florida Luxury Condo Building Directory | Cays Realty" },
       {
         name: "description",
         content:
-          "Browse Miami's luxury condo towers — active listings, average price per square foot and building-level market data from the live MLS.",
+          "Browse luxury condo towers across Miami-Dade, Broward and Palm Beach — active listings for sale and rent, price per square foot and live MLS building data.",
       },
-      { property: "og:title", content: "Miami Condo Tower Directory | Cays Realty" },
+      {
+        property: "og:title",
+        content: "Southeast Florida Luxury Condo Building Directory | Cays Realty",
+      },
       {
         property: "og:description",
-        content: "Luxury Miami towers with live active listing counts and $/sq ft data.",
+        content:
+          "Luxury towers from Brickell to Palm Beach Island with live listing counts and $/sq ft data.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/buildings" },
