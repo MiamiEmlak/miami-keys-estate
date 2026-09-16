@@ -2,6 +2,7 @@
 export type Building = {
   slug: string;
   name: string;
+  developer?: string;
   neighborhood: string;
   neighborhoodSlug: string;
   addressPrefix: string;
