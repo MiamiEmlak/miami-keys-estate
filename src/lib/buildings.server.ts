@@ -71,12 +71,26 @@ async function statsFor(b: Building): Promise<BuildingStats> {
     const rents = rentals.map((r) => r.list_price).filter((p): p is number => typeof p === "number");
     const withPhoto = res.value.find((raw) => photoOf(raw));
 
+    const ppsf = (list: typeof sales) => {
+      const values = list
+        .filter((r) => r.list_price && r.living_area && r.living_area > 200)
+        .map((r) => r.list_price! / r.living_area!);
+      return values.length ? Math.round(values.reduce((a, c) => a + c, 0) / values.length) : null;
+    };
+
     const data: BuildingStats = {
       ...summarize(rows),
       slug: b.slug,
       avgPrice: avg(prices),
       avgRent: avg(rents),
       minPrice: prices.length ? Math.min(...prices) : null,
+      maxPrice: prices.length ? Math.max(...prices) : null,
+      minRent: rents.length ? Math.min(...rents) : null,
+      maxRent: rents.length ? Math.max(...rents) : null,
+      salePerSqFt: ppsf(sales),
+      rentPerSqFt: ppsf(rentals),
+      saleCount: sales.length,
+      rentCount: rentals.length,
       photo: withPhoto ? photoOf(withPhoto) : null,
     };
     cache.set(b.slug, { at: Date.now(), data });
