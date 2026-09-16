@@ -1,6 +1,6 @@
 // Server-only: live building statistics and unit lists from the Trestle OData feed.
 import { readTrestleEnv, trestleGet, normalizeProperty } from "./trestle.server";
-import { summarize, photoOf, EMPTY_STATS, type MarketStats } from "./market.server";
+import { summarize, photoOf, EMPTY_STATS, mapLimit, type MarketStats } from "./market.server";
 import { BUILDINGS, getBuilding, type Building } from "./buildings";
 
 export type BuildingStats = MarketStats & {
