@@ -5,23 +5,27 @@ import { useMemo, useState } from "react";
 import { getNeighborhoodDirectoryFn } from "@/lib/market.functions";
 import { NeighborhoodCard } from "@/components/market/NeighborhoodCard";
 import { BuildingCardSkeleton } from "@/components/listings/Skeletons";
-import { NEIGHBORHOOD_LIST } from "@/lib/neighborhoods";
+import { NEIGHBORHOOD_LIST, COUNTIES } from "@/lib/neighborhoods";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/neighborhoods/")({
   head: () => ({
     meta: [
-      { title: "Miami Neighborhood Intelligence | Cays Realty" },
+      { title: "Southeast Florida Neighborhood Intelligence | Cays Realty" },
       {
         name: "description",
         content:
-          "Compare Miami neighborhoods on median price, rents, price per square foot, schools, walkability and short-term-rental rules with live MLS data.",
+          "Compare 40+ luxury neighborhoods across Miami-Dade, Broward and Palm Beach on median price, rents, price per square foot, schools, walkability and short-term-rental rules.",
       },
-      { property: "og:title", content: "Miami Neighborhood Intelligence | Cays Realty" },
+      {
+        property: "og:title",
+        content: "Southeast Florida Neighborhood Intelligence | Cays Realty",
+      },
       {
         property: "og:description",
-        content: "Live median prices, rents and $/sq ft for every Miami neighborhood we cover.",
+        content:
+          "Live median prices, rents and $/sq ft for every high-end neighborhood from Brickell to Jupiter Island.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/neighborhoods" },
@@ -41,6 +45,7 @@ function NeighborhoodsIndex() {
   });
 
   const [q, setQ] = useState("");
+  const [county, setCounty] = useState("");
   const [str, setStr] = useState(false);
 
   const statsBySlug = useMemo(
@@ -49,6 +54,7 @@ function NeighborhoodsIndex() {
   );
 
   const items = NEIGHBORHOOD_LIST.filter((n) => {
+    if (county && n.county !== county) return false;
     if (str && !n.strFriendly) return false;
     if (q && !`${n.name} ${n.city}`.toLowerCase().includes(q.toLowerCase())) return false;
     return true;
@@ -59,13 +65,14 @@ function NeighborhoodsIndex() {
       <section className="mx-auto max-w-7xl px-6 pb-8 pt-8">
         <p className="eyebrow text-muted-foreground">Neighborhood intelligence</p>
         <h1 className="mt-5 max-w-3xl font-display text-5xl leading-tight text-foreground sm:text-6xl">
-          Miami Neighborhoods
+          Southeast Florida Neighborhoods
         </h1>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          Lifestyle, schools, investment outlook and live MLS pricing for every corridor we cover.
+          Lifestyle, schools, investment outlook and live MLS pricing across Miami-Dade, Broward and
+          Palm Beach.
         </p>
 
-        <div className="mt-10 grid gap-4 rounded-sm border border-border bg-card p-6 sm:grid-cols-2">
+        <div className="mt-10 grid gap-4 rounded-sm border border-border bg-card p-6 sm:grid-cols-3">
           <div>
             <Label htmlFor="n-q">Neighborhood</Label>
             <Input
@@ -74,6 +81,22 @@ function NeighborhoodsIndex() {
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search by name"
             />
+          </div>
+          <div>
+            <Label htmlFor="n-county">County</Label>
+            <select
+              id="n-county"
+              value={county}
+              onChange={(e) => setCounty(e.target.value)}
+              className="mt-1 h-9 w-full rounded-sm border border-input bg-background px-3 text-sm"
+            >
+              <option value="">All counties</option>
+              {COUNTIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex items-end">
             <label className="flex items-center gap-3 text-sm text-foreground">

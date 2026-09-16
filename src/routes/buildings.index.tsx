@@ -5,7 +5,8 @@ import { useMemo, useState } from "react";
 import { getBuildingDirectoryFn } from "@/lib/buildings.functions";
 import { BuildingCard } from "@/components/market/BuildingCard";
 import { BuildingCardSkeleton } from "@/components/listings/Skeletons";
-import { BUILDINGS, NEIGHBORHOODS, PRICE_TIERS } from "@/lib/buildings";
+import { BUILDINGS, NEIGHBORHOODS, PRICE_TIERS, countyOf } from "@/lib/buildings";
+import { COUNTIES } from "@/lib/neighborhoods";
 import { money, num } from "@/lib/format";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,16 +14,20 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/buildings/")({
   head: () => ({
     meta: [
-      { title: "Miami Condo Tower Directory | Cays Realty" },
+      { title: "Southeast Florida Luxury Condo Building Directory | Cays Realty" },
       {
         name: "description",
         content:
-          "Browse Miami's luxury condo towers — active listings, average price per square foot and building-level market data from the live MLS.",
+          "Browse luxury condo towers across Miami-Dade, Broward and Palm Beach — active listings for sale and rent, price per square foot and live MLS building data.",
       },
-      { property: "og:title", content: "Miami Condo Tower Directory | Cays Realty" },
+      {
+        property: "og:title",
+        content: "Southeast Florida Luxury Condo Building Directory | Cays Realty",
+      },
       {
         property: "og:description",
-        content: "Luxury Miami towers with live active listing counts and $/sq ft data.",
+        content:
+          "Luxury towers from Brickell to Palm Beach Island with live listing counts and $/sq ft data.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/buildings" },
@@ -42,8 +47,12 @@ function BuildingsDirectory() {
   });
 
   const [q, setQ] = useState("");
+  const [county, setCounty] = useState("");
   const [hood, setHood] = useState("");
   const [tier, setTier] = useState("");
+  const hoodOptions = county
+    ? Array.from(new Set(BUILDINGS.filter((b) => countyOf(b) === county).map((b) => b.neighborhood))).sort()
+    : NEIGHBORHOODS;
 
   const statsBySlug = useMemo(
     () => Object.fromEntries((data?.stats ?? []).map((s) => [s.slug, s])),
@@ -53,6 +62,7 @@ function BuildingsDirectory() {
   const tierRange = PRICE_TIERS.find((t) => t.value === tier) ?? PRICE_TIERS[0]!;
 
   const buildings = BUILDINGS.filter((b) => {
+    if (county && countyOf(b) !== county) return false;
     if (hood && b.neighborhood !== hood) return false;
     if (q && !`${b.name} ${b.address}`.toLowerCase().includes(q.toLowerCase())) return false;
     if (tier) {
@@ -68,13 +78,14 @@ function BuildingsDirectory() {
       <section className="mx-auto max-w-7xl px-6 pb-8 pt-8">
         <p className="eyebrow text-muted-foreground">Building intelligence</p>
         <h1 className="mt-5 max-w-3xl font-display text-5xl leading-tight text-foreground sm:text-6xl">
-          Miami Condo Tower Directory
+          Southeast Florida Luxury Building Directory
         </h1>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          Explore top luxury residential towers, active listings, and market data.
+          Towers from Brickell to Palm Beach Island — live listings for sale and for rent, HOA
+          ranges and price per square foot.
         </p>
 
-        <div className="mt-10 grid gap-4 rounded-sm border border-border bg-card p-6 sm:grid-cols-3">
+        <div className="mt-10 grid gap-4 rounded-sm border border-border bg-card p-6 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Label htmlFor="b-q">Building</Label>
             <Input
@@ -85,6 +96,25 @@ function BuildingsDirectory() {
             />
           </div>
           <div>
+            <Label htmlFor="b-county">County</Label>
+            <select
+              id="b-county"
+              value={county}
+              onChange={(e) => {
+                setCounty(e.target.value);
+                setHood("");
+              }}
+              className="mt-1 h-9 w-full rounded-sm border border-input bg-background px-3 text-sm"
+            >
+              <option value="">All counties</option>
+              {COUNTIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
             <Label htmlFor="b-hood">Neighborhood</Label>
             <select
               id="b-hood"
@@ -93,7 +123,7 @@ function BuildingsDirectory() {
               className="mt-1 h-9 w-full rounded-sm border border-input bg-background px-3 text-sm"
             >
               <option value="">All neighborhoods</option>
-              {NEIGHBORHOODS.map((n) => (
+              {hoodOptions.map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>

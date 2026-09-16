@@ -110,36 +110,64 @@ function neighborhoodFilter(slug: string): string | null {
   return `StandardStatus eq 'Active' and City eq '${esc(n.city)}'`;
 }
 
+// Run async work with limited concurrency so a large directory doesn't open
+// dozens of simultaneous MLS connections.
+export async function mapLimit<T, R>(
+  items: T[],
+  limit: number,
+  fn: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const out: R[] = new Array(items.length);
+  let cursor = 0;
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (cursor < items.length) {
+      const i = cursor++;
+      out[i] = await fn(items[i]!);
+    }
+  });
+  await Promise.all(workers);
+  return out;
+}
+
 export async function getNeighborhoodDirectory() {
-  const stats = await Promise.all(
-    NEIGHBORHOOD_LIST.map(async (n) =>
-      cached(`nbhd-dir:${n.slug}`, async () => {
-        const filter = neighborhoodFilter(n.slug)!;
-        const { raw } = await fetchRows(filter, 40, true);
-        const rows = raw.map(normalizeProperty);
-        const withPhoto = raw.find((r) => photoOf(r));
-        return {
-          slug: n.slug,
-          ...summarize(rows),
-          photo: withPhoto ? photoOf(withPhoto) : null,
-        };
-      }),
-    ),
+  const stats = await mapLimit(NEIGHBORHOOD_LIST, 6, async (n) =>
+    cached(`nbhd-dir:${n.slug}`, async () => {
+      const filter = neighborhoodFilter(n.slug)!;
+      const { raw } = await fetchRows(filter, 40, true);
+      const rows = raw.map(normalizeProperty);
+      const withPhoto = raw.find((r) => photoOf(r));
+      return {
+        slug: n.slug,
+        ...summarize(rows),
+        photo: withPhoto ? photoOf(withPhoto) : null,
+      };
+    }),
   );
   return { stats };
 }
 
 export async function getNeighborhoodProfile(slug: string) {
+  const empty = {
+    stats: EMPTY_STATS,
+    listings: [] as MarketCard[],
+    saleListings: [] as MarketCard[],
+    rentListings: [] as MarketCard[],
+  };
   const filter = neighborhoodFilter(slug);
-  if (!filter) return { stats: EMPTY_STATS, listings: [] as MarketCard[], error: "Unknown neighborhood" };
+  if (!filter) return { ...empty, error: "Unknown neighborhood" };
 
   const { raw, error } = await fetchRows(filter, SAMPLE, true);
   const rows = raw.map(normalizeProperty);
-  const listings: MarketCard[] = raw.slice(0, 12).map((r) => ({
-    ...normalizeProperty(r),
-    photo: photoOf(r),
-  }));
-  return { stats: summarize(rows), listings, error };
+  const cards: MarketCard[] = raw.map((r) => ({ ...normalizeProperty(r), photo: photoOf(r) }));
+  const saleListings = cards.filter((c) => c.property_type !== "ResidentialLease").slice(0, 12);
+  const rentListings = cards.filter((c) => c.property_type === "ResidentialLease").slice(0, 12);
+  return {
+    stats: summarize(rows),
+    listings: cards.slice(0, 12),
+    saleListings,
+    rentListings,
+    error,
+  };
 }
 
 /* --------------------------------- homes ---------------------------------- */
