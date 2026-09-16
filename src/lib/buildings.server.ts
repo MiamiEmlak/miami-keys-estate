@@ -102,7 +102,7 @@ async function statsFor(b: Building): Promise<BuildingStats> {
 }
 
 export async function getBuildingDirectory() {
-  const stats = await Promise.all(BUILDINGS.map(statsFor));
+  const stats = await mapLimit(BUILDINGS, 6, statsFor);
   return { stats };
 }
 
