@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { getNeighborhoodDirectoryFn } from "@/lib/market.functions";
 import { NeighborhoodCard } from "@/components/market/NeighborhoodCard";
 import { BuildingCardSkeleton } from "@/components/listings/Skeletons";
-import { NEIGHBORHOOD_LIST } from "@/lib/neighborhoods";
+import { NEIGHBORHOOD_LIST, COUNTIES } from "@/lib/neighborhoods";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
