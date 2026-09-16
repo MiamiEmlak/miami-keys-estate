@@ -65,13 +65,14 @@ function NeighborhoodsIndex() {
       <section className="mx-auto max-w-7xl px-6 pb-8 pt-8">
         <p className="eyebrow text-muted-foreground">Neighborhood intelligence</p>
         <h1 className="mt-5 max-w-3xl font-display text-5xl leading-tight text-foreground sm:text-6xl">
-          Miami Neighborhoods
+          Southeast Florida Neighborhoods
         </h1>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          Lifestyle, schools, investment outlook and live MLS pricing for every corridor we cover.
+          Lifestyle, schools, investment outlook and live MLS pricing across Miami-Dade, Broward and
+          Palm Beach.
         </p>
 
-        <div className="mt-10 grid gap-4 rounded-sm border border-border bg-card p-6 sm:grid-cols-2">
+        <div className="mt-10 grid gap-4 rounded-sm border border-border bg-card p-6 sm:grid-cols-3">
           <div>
             <Label htmlFor="n-q">Neighborhood</Label>
             <Input
@@ -80,6 +81,22 @@ function NeighborhoodsIndex() {
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search by name"
             />
+          </div>
+          <div>
+            <Label htmlFor="n-county">County</Label>
+            <select
+              id="n-county"
+              value={county}
+              onChange={(e) => setCounty(e.target.value)}
+              className="mt-1 h-9 w-full rounded-sm border border-input bg-background px-3 text-sm"
+            >
+              <option value="">All counties</option>
+              {COUNTIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex items-end">
             <label className="flex items-center gap-3 text-sm text-foreground">
