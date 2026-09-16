@@ -106,17 +106,35 @@ export async function getBuildingDirectory() {
   return { stats };
 }
 
+const DAY = 24 * 60 * 60 * 1000;
+
+function split(units: BuildingUnit[]) {
+  const saleUnits = units.filter((u) => u.property_type !== "ResidentialLease");
+  const rentalUnits = units.filter((u) => u.property_type === "ResidentialLease");
+  const priceDropUnits = units.filter((u) => {
+    const prior = u.previous_list_price ?? u.original_list_price;
+    return typeof prior === "number" && typeof u.list_price === "number" && u.list_price < prior;
+  });
+  const since = Date.now() - 30 * DAY;
+  const newUnits = units.filter((u) => {
+    const d = u.listing_contract_date ? new Date(u.listing_contract_date).getTime() : NaN;
+    return !Number.isNaN(d) && d >= since;
+  });
+  return { saleUnits, rentalUnits, priceDropUnits, newUnits };
+}
+
 export async function getBuildingProfile(slug: string) {
   const b = getBuilding(slug);
-  if (!b) return { stats: null, units: [] as BuildingUnit[], error: "Unknown building" };
+  const none = { units: [] as BuildingUnit[], ...split([]) };
+  if (!b) return { stats: null, ...none, error: "Unknown building" };
 
   const { env } = readTrestleEnv();
   const stats = await statsFor(b);
-  if (!env) return { stats, units: [] as BuildingUnit[], error: "MLS not configured" };
+  if (!env) return { stats, ...none, error: "MLS not configured" };
 
   try {
     const res = await trestleGet(env, "Property", {
-      $top: "40",
+      $top: "60",
       $filter: buildingFilter(b),
       $orderby: "ListPrice desc",
       $expand: "Media",
@@ -125,12 +143,12 @@ export async function getBuildingProfile(slug: string) {
       ...normalizeProperty(raw),
       photo: photoOf(raw),
     }));
-    return { stats, units, error: null as string | null };
+    return { stats, units, ...split(units), error: null as string | null };
   } catch (error) {
     console.error("building units failed", slug, error);
     return {
       stats,
-      units: [] as BuildingUnit[],
+      ...none,
       error: error instanceof Error ? error.message : "MLS request failed",
     };
   }
