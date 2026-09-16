@@ -1,5 +1,5 @@
 // Nightly price snapshot job: pulls active Trestle listings, stores price_history rows
-// and logs price changes to lead_activity. Protected by the CRON_SECRET header.
+// and logs price changes to lead_activity. Protected by the CRON_JOB_TOKEN header.
 import { createFileRoute } from "@tanstack/react-router";
 import { readTrestleEnv, trestleGet, normalizeProperty } from "@/lib/trestle.server";
 
@@ -121,7 +121,7 @@ export const Route = createFileRoute("/api/public/hooks/sync-price-history")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env["CRON_SECRET"];
+        const secret = process.env["CRON_JOB_TOKEN"];
         if (!secret || request.headers.get("x-cron-secret") !== secret) {
           return new Response("Unauthorized", { status: 401 });
         }

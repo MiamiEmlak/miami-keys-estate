@@ -153,7 +153,7 @@ export const Route = createFileRoute("/api/public/hooks/send-user-alerts")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env["CRON_SECRET"];
+        const secret = process.env["CRON_JOB_TOKEN"];
         if (!secret || request.headers.get("x-cron-secret") !== secret) {
           return new Response("Unauthorized", { status: 401 });
         }
