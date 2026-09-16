@@ -47,8 +47,12 @@ function BuildingsDirectory() {
   });
 
   const [q, setQ] = useState("");
+  const [county, setCounty] = useState("");
   const [hood, setHood] = useState("");
   const [tier, setTier] = useState("");
+  const hoodOptions = county
+    ? Array.from(new Set(BUILDINGS.filter((b) => countyOf(b) === county).map((b) => b.neighborhood))).sort()
+    : NEIGHBORHOODS;
 
   const statsBySlug = useMemo(
     () => Object.fromEntries((data?.stats ?? []).map((s) => [s.slug, s])),
