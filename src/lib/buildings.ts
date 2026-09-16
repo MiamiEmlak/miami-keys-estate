@@ -25,14 +25,26 @@ export type Building = {
   blurb: string;
 };
 
-export const NEIGHBORHOODS = [
-  "Brickell",
-  "Edgewater",
-  "Downtown",
-  "Midtown",
-  "Miami Beach",
-  "Sunny Isles",
-] as const;
+const COUNTY_BY_CITY: Record<string, "Miami-Dade" | "Broward" | "Palm Beach"> = {
+  Miami: "Miami-Dade",
+  "Miami Beach": "Miami-Dade",
+  "Sunny Isles Beach": "Miami-Dade",
+  "Bal Harbour": "Miami-Dade",
+  Aventura: "Miami-Dade",
+  "Key Biscayne": "Miami-Dade",
+  "Coral Gables": "Miami-Dade",
+  "Fort Lauderdale": "Broward",
+  Hollywood: "Broward",
+  "Hallandale Beach": "Broward",
+  "Pompano Beach": "Broward",
+  "Boca Raton": "Palm Beach",
+  "Delray Beach": "Palm Beach",
+  "Palm Beach": "Palm Beach",
+  "West Palm Beach": "Palm Beach",
+  "Riviera Beach": "Palm Beach",
+};
+
+export const countyOf = (b: Building) => COUNTY_BY_CITY[b.city] ?? "Miami-Dade";
 
 export const PRICE_TIERS: { value: string; label: string; min: number; max: number }[] = [
   { value: "", label: "Any price tier", min: 0, max: Number.POSITIVE_INFINITY },
