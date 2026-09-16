@@ -10,18 +10,33 @@ import { AlertButton } from "@/components/market/AlertButton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const CITIES = ["Miami", "Coral Gables", "Coconut Grove", "Miami Beach", "Pinecrest", "Key Biscayne"];
+const CITIES = [
+  "Miami",
+  "Coral Gables",
+  "Coconut Grove",
+  "Miami Beach",
+  "Pinecrest",
+  "Key Biscayne",
+  "Fort Lauderdale",
+  "Weston",
+  "Parkland",
+  "Hollywood",
+  "Boca Raton",
+  "Delray Beach",
+  "West Palm Beach",
+  "Jupiter",
+];
 
 export const Route = createFileRoute("/homes/")({
   head: () => ({
     meta: [
-      { title: "Miami Single-Family Homes for Sale | Cays Realty" },
+      { title: "Southeast Florida Single-Family Homes for Sale | Cays Realty" },
       {
         name: "description",
         content:
-          "Browse live MLS single-family homes across Miami — lot sizes, price per square foot, school zones and neighborhood intelligence on every listing.",
+          "Browse live MLS single-family homes across Miami-Dade, Broward and Palm Beach — lot sizes, price per square foot, school zones and neighborhood intelligence on every listing.",
       },
-      { property: "og:title", content: "Miami Single-Family Homes for Sale | Cays Realty" },
+      { property: "og:title", content: "Southeast Florida Single-Family Homes for Sale | Cays Realty" },
       {
         property: "og:description",
         content: "Live single-family listings with lot size, $/sq ft and neighborhood data.",
@@ -63,10 +78,10 @@ function HomesIndex() {
       <section className="mx-auto max-w-7xl px-6 pb-8 pt-8">
         <p className="eyebrow text-muted-foreground">Single-family intelligence</p>
         <h1 className="mt-5 max-w-3xl font-display text-5xl leading-tight text-foreground sm:text-6xl">
-          Miami Single-Family Homes
+          Southeast Florida Single-Family Homes
         </h1>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          Houses, lots and renovation plays across Miami-Dade — priced live from the MLS.
+          Houses, lots and renovation plays across Miami-Dade, Broward and Palm Beach — priced live from the MLS.
         </p>
 
         <div className="mt-8">
