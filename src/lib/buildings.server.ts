@@ -44,6 +44,13 @@ async function statsFor(b: Building): Promise<BuildingStats> {
     avgPrice: null,
     avgRent: null,
     minPrice: null,
+    maxPrice: null,
+    minRent: null,
+    maxRent: null,
+    salePerSqFt: null,
+    rentPerSqFt: null,
+    saleCount: 0,
+    rentCount: 0,
     photo: null,
   };
   if (!env) return empty;
