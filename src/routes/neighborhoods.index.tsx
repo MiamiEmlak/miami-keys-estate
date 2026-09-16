@@ -45,6 +45,7 @@ function NeighborhoodsIndex() {
   });
 
   const [q, setQ] = useState("");
+  const [county, setCounty] = useState("");
   const [str, setStr] = useState(false);
 
   const statsBySlug = useMemo(
