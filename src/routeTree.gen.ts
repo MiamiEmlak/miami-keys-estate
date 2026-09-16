@@ -24,6 +24,7 @@ import { Route as SellRouteImport } from './routes/sell'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
 import { Route as BuildingsSlugRouteImport } from './routes/buildings.$slug'
+import { Route as HomesIndexRouteImport } from './routes/homes.index'
 import { Route as NeighborhoodsIndexRouteImport } from './routes/neighborhoods.index'
 import { Route as NeighborhoodsSlugRouteImport } from './routes/neighborhoods.$slug'
 import { Route as NewProjectsIndexRouteImport } from './routes/new-projects.index'
@@ -106,6 +107,11 @@ const BuildingsSlugRoute = BuildingsSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BuildingsRoute,
 } as any)
+const HomesIndexRoute = HomesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => HomesRoute,
+} as any)
 const NeighborhoodsIndexRoute = NeighborhoodsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -150,7 +156,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
-  '/homes': typeof HomesRoute
+  '/homes': typeof HomesRouteWithChildren
   '/neighborhoods': typeof NeighborhoodsRouteWithChildren
   '/new-projects': typeof NewProjectsRouteWithChildren
   '/privacy': typeof PrivacyRoute
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
+  '/homes/': typeof HomesIndexRoute
   '/neighborhoods/': typeof NeighborhoodsIndexRoute
   '/new-projects/': typeof NewProjectsIndexRoute
   '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
@@ -172,7 +179,6 @@ export interface FileRoutesByTo {
   '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/compare': typeof CompareRoute
-  '/homes': typeof HomesRoute
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
@@ -182,6 +188,7 @@ export interface FileRoutesByTo {
   '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings': typeof BuildingsIndexRoute
+  '/homes': typeof HomesIndexRoute
   '/neighborhoods': typeof NeighborhoodsIndexRoute
   '/new-projects': typeof NewProjectsIndexRoute
   '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
@@ -195,7 +202,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
-  '/homes': typeof HomesRoute
+  '/homes': typeof HomesRouteWithChildren
   '/neighborhoods': typeof NeighborhoodsRouteWithChildren
   '/new-projects': typeof NewProjectsRouteWithChildren
   '/privacy': typeof PrivacyRoute
@@ -207,6 +214,7 @@ export interface FileRoutesById {
   '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
+  '/homes/': typeof HomesIndexRoute
   '/neighborhoods/': typeof NeighborhoodsIndexRoute
   '/new-projects/': typeof NewProjectsIndexRoute
   '/_authenticated/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
@@ -232,6 +240,7 @@ export interface FileRouteTypes {
     | '/new-projects/$id'
     | '/property/$id'
     | '/buildings/'
+    | '/homes/'
     | '/neighborhoods/'
     | '/new-projects/'
     | '/admin/new-projects'
@@ -242,7 +251,6 @@ export interface FileRouteTypes {
     | '/ask'
     | '/auth'
     | '/compare'
-    | '/homes'
     | '/privacy'
     | '/search'
     | '/sell'
@@ -252,6 +260,7 @@ export interface FileRouteTypes {
     | '/new-projects/$id'
     | '/property/$id'
     | '/buildings'
+    | '/homes'
     | '/neighborhoods'
     | '/new-projects'
     | '/admin/new-projects'
@@ -276,6 +285,7 @@ export interface FileRouteTypes {
     | '/new-projects/$id'
     | '/property/$id'
     | '/buildings/'
+    | '/homes/'
     | '/neighborhoods/'
     | '/new-projects/'
     | '/_authenticated/admin/new-projects'
@@ -289,7 +299,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BuildingsRoute: typeof BuildingsRouteWithChildren
   CompareRoute: typeof CompareRoute
-  HomesRoute: typeof HomesRoute
+  HomesRoute: typeof HomesRouteWithChildren
   NeighborhoodsRoute: typeof NeighborhoodsRouteWithChildren
   NewProjectsRoute: typeof NewProjectsRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
@@ -406,6 +416,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BuildingsSlugRouteImport
       parentRoute: typeof BuildingsRoute
     }
+    '/homes/': {
+      id: '/homes/'
+      path: '/'
+      fullPath: '/homes/'
+      preLoaderRoute: typeof HomesIndexRouteImport
+      parentRoute: typeof HomesRoute
+    }
     '/neighborhoods/': {
       id: '/neighborhoods/'
       path: '/'
@@ -485,6 +502,16 @@ const BuildingsRouteWithChildren = BuildingsRoute._addFileChildren(
   BuildingsRouteChildren,
 )
 
+interface HomesRouteChildren {
+  HomesIndexRoute: typeof HomesIndexRoute
+}
+
+const HomesRouteChildren: HomesRouteChildren = {
+  HomesIndexRoute: HomesIndexRoute,
+}
+
+const HomesRouteWithChildren = HomesRoute._addFileChildren(HomesRouteChildren)
+
 interface NeighborhoodsRouteChildren {
   NeighborhoodsSlugRoute: typeof NeighborhoodsSlugRoute
   NeighborhoodsIndexRoute: typeof NeighborhoodsIndexRoute
@@ -520,7 +547,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BuildingsRoute: BuildingsRouteWithChildren,
   CompareRoute: CompareRoute,
-  HomesRoute: HomesRoute,
+  HomesRoute: HomesRouteWithChildren,
   NeighborhoodsRoute: NeighborhoodsRouteWithChildren,
   NewProjectsRoute: NewProjectsRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
