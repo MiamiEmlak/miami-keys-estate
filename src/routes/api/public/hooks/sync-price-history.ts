@@ -65,12 +65,17 @@ async function run() {
 
   for (const l of listings) {
     const previous = lastPrice.get(l.listing_key);
+    const snap = {
+      listing_key: l.listing_key,
+      price: l.list_price,
+      standard_status: l.standard_status,
+    };
     if (previous === undefined) {
-      snapshots.push(l);
+      snapshots.push(snap);
       continue;
     }
     if (previous !== l.list_price) {
-      snapshots.push(l);
+      snapshots.push(snap);
       changes.push({ listing_key: l.listing_key, old_price: previous, new_price: l.list_price });
     }
   }

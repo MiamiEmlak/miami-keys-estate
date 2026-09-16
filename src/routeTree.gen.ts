@@ -33,6 +33,7 @@ import { Route as NewProjectsIdRouteImport } from './routes/new-projects.$id'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as AuthenticatedAdminNewProjectsRouteImport } from './routes/_authenticated/admin/new-projects'
 import { Route as AuthenticatedAdminTrestleRouteImport } from './routes/_authenticated/admin/trestle'
+import { Route as ApiPublicHooksSyncPriceHistoryRouteImport } from './routes/api/public/hooks/sync-price-history'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -155,6 +156,12 @@ const AuthenticatedAdminTrestleRoute =
     path: '/admin/trestle',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicHooksSyncPriceHistoryRoute =
+  ApiPublicHooksSyncPriceHistoryRouteImport.update({
+    id: '/api/public/hooks/sync-price-history',
+    path: '/api/public/hooks/sync-price-history',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -180,6 +187,7 @@ export interface FileRoutesByFullPath {
   '/new-projects/': typeof NewProjectsIndexRoute
   '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
+  '/api/public/hooks/sync-price-history': typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -201,6 +209,7 @@ export interface FileRoutesByTo {
   '/new-projects': typeof NewProjectsIndexRoute
   '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
+  '/api/public/hooks/sync-price-history': typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -228,6 +237,7 @@ export interface FileRoutesById {
   '/new-projects/': typeof NewProjectsIndexRoute
   '/_authenticated/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/_authenticated/admin/trestle': typeof AuthenticatedAdminTrestleRoute
+  '/api/public/hooks/sync-price-history': typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -255,6 +265,7 @@ export interface FileRouteTypes {
     | '/new-projects/'
     | '/admin/new-projects'
     | '/admin/trestle'
+    | '/api/public/hooks/sync-price-history'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/new-projects'
     | '/admin/new-projects'
     | '/admin/trestle'
+    | '/api/public/hooks/sync-price-history'
   id:
     | '__root__'
     | '/'
@@ -302,6 +314,7 @@ export interface FileRouteTypes {
     | '/new-projects/'
     | '/_authenticated/admin/new-projects'
     | '/_authenticated/admin/trestle'
+    | '/api/public/hooks/sync-price-history'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -319,6 +332,7 @@ export interface RootRouteChildren {
   SellRoute: typeof SellRoute
   TermsRoute: typeof TermsRoute
   PropertyIdRoute: typeof PropertyIdRoute
+  ApiPublicHooksSyncPriceHistoryRoute: typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -491,6 +505,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminTrestleRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/hooks/sync-price-history': {
+      id: '/api/public/hooks/sync-price-history'
+      path: '/api/public/hooks/sync-price-history'
+      fullPath: '/api/public/hooks/sync-price-history'
+      preLoaderRoute: typeof ApiPublicHooksSyncPriceHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -576,6 +597,7 @@ const rootRouteChildren: RootRouteChildren = {
   SellRoute: SellRoute,
   TermsRoute: TermsRoute,
   PropertyIdRoute: PropertyIdRoute,
+  ApiPublicHooksSyncPriceHistoryRoute: ApiPublicHooksSyncPriceHistoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
