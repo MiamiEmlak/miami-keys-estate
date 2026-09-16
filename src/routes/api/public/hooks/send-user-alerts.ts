@@ -13,7 +13,7 @@ type AlertRow = {
   user_id: string | null;
   activity_type: string;
   listing_key: string | null;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, string | number | boolean | null>;
 };
 
 async function fetchNew(env: NonNullable<ReturnType<typeof readTrestleEnv>["env"]>, filter: string) {

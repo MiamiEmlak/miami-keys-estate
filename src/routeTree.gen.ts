@@ -33,6 +33,7 @@ import { Route as NewProjectsIdRouteImport } from './routes/new-projects.$id'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as AuthenticatedAdminNewProjectsRouteImport } from './routes/_authenticated/admin/new-projects'
 import { Route as AuthenticatedAdminTrestleRouteImport } from './routes/_authenticated/admin/trestle'
+import { Route as ApiPublicHooksSendUserAlertsRouteImport } from './routes/api/public/hooks/send-user-alerts'
 import { Route as ApiPublicHooksSyncPriceHistoryRouteImport } from './routes/api/public/hooks/sync-price-history'
 
 const IndexRoute = IndexRouteImport.update({
@@ -156,6 +157,12 @@ const AuthenticatedAdminTrestleRoute =
     path: '/admin/trestle',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicHooksSendUserAlertsRoute =
+  ApiPublicHooksSendUserAlertsRouteImport.update({
+    id: '/api/public/hooks/send-user-alerts',
+    path: '/api/public/hooks/send-user-alerts',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksSyncPriceHistoryRoute =
   ApiPublicHooksSyncPriceHistoryRouteImport.update({
     id: '/api/public/hooks/sync-price-history',
@@ -187,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/new-projects/': typeof NewProjectsIndexRoute
   '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
+  '/api/public/hooks/send-user-alerts': typeof ApiPublicHooksSendUserAlertsRoute
   '/api/public/hooks/sync-price-history': typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 export interface FileRoutesByTo {
@@ -209,6 +217,7 @@ export interface FileRoutesByTo {
   '/new-projects': typeof NewProjectsIndexRoute
   '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
+  '/api/public/hooks/send-user-alerts': typeof ApiPublicHooksSendUserAlertsRoute
   '/api/public/hooks/sync-price-history': typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 export interface FileRoutesById {
@@ -237,6 +246,7 @@ export interface FileRoutesById {
   '/new-projects/': typeof NewProjectsIndexRoute
   '/_authenticated/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/_authenticated/admin/trestle': typeof AuthenticatedAdminTrestleRoute
+  '/api/public/hooks/send-user-alerts': typeof ApiPublicHooksSendUserAlertsRoute
   '/api/public/hooks/sync-price-history': typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 export interface FileRouteTypes {
@@ -265,6 +275,7 @@ export interface FileRouteTypes {
     | '/new-projects/'
     | '/admin/new-projects'
     | '/admin/trestle'
+    | '/api/public/hooks/send-user-alerts'
     | '/api/public/hooks/sync-price-history'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/new-projects'
     | '/admin/new-projects'
     | '/admin/trestle'
+    | '/api/public/hooks/send-user-alerts'
     | '/api/public/hooks/sync-price-history'
   id:
     | '__root__'
@@ -314,6 +326,7 @@ export interface FileRouteTypes {
     | '/new-projects/'
     | '/_authenticated/admin/new-projects'
     | '/_authenticated/admin/trestle'
+    | '/api/public/hooks/send-user-alerts'
     | '/api/public/hooks/sync-price-history'
   fileRoutesById: FileRoutesById
 }
@@ -332,6 +345,7 @@ export interface RootRouteChildren {
   SellRoute: typeof SellRoute
   TermsRoute: typeof TermsRoute
   PropertyIdRoute: typeof PropertyIdRoute
+  ApiPublicHooksSendUserAlertsRoute: typeof ApiPublicHooksSendUserAlertsRoute
   ApiPublicHooksSyncPriceHistoryRoute: typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 
@@ -505,6 +519,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminTrestleRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/hooks/send-user-alerts': {
+      id: '/api/public/hooks/send-user-alerts'
+      path: '/api/public/hooks/send-user-alerts'
+      fullPath: '/api/public/hooks/send-user-alerts'
+      preLoaderRoute: typeof ApiPublicHooksSendUserAlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/sync-price-history': {
       id: '/api/public/hooks/sync-price-history'
       path: '/api/public/hooks/sync-price-history'
@@ -597,6 +618,7 @@ const rootRouteChildren: RootRouteChildren = {
   SellRoute: SellRoute,
   TermsRoute: TermsRoute,
   PropertyIdRoute: PropertyIdRoute,
+  ApiPublicHooksSendUserAlertsRoute: ApiPublicHooksSendUserAlertsRoute,
   ApiPublicHooksSyncPriceHistoryRoute: ApiPublicHooksSyncPriceHistoryRoute,
 }
 export const routeTree = rootRouteImport
