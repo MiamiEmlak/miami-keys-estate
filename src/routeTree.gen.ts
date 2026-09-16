@@ -25,6 +25,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
 import { Route as BuildingsSlugRouteImport } from './routes/buildings.$slug'
 import { Route as HomesIndexRouteImport } from './routes/homes.index'
+import { Route as HomesSlugRouteImport } from './routes/homes.$slug'
 import { Route as NeighborhoodsIndexRouteImport } from './routes/neighborhoods.index'
 import { Route as NeighborhoodsSlugRouteImport } from './routes/neighborhoods.$slug'
 import { Route as NewProjectsIndexRouteImport } from './routes/new-projects.index'
@@ -112,6 +113,11 @@ const HomesIndexRoute = HomesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => HomesRoute,
 } as any)
+const HomesSlugRoute = HomesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => HomesRoute,
+} as any)
 const NeighborhoodsIndexRoute = NeighborhoodsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/homes/$slug': typeof HomesSlugRoute
   '/neighborhoods/$slug': typeof NeighborhoodsSlugRoute
   '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByTo {
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/homes/$slug': typeof HomesSlugRoute
   '/neighborhoods/$slug': typeof NeighborhoodsSlugRoute
   '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/homes/$slug': typeof HomesSlugRoute
   '/neighborhoods/$slug': typeof NeighborhoodsSlugRoute
   '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/homes/$slug'
     | '/neighborhoods/$slug'
     | '/new-projects/$id'
     | '/property/$id'
@@ -256,6 +266,7 @@ export interface FileRouteTypes {
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/homes/$slug'
     | '/neighborhoods/$slug'
     | '/new-projects/$id'
     | '/property/$id'
@@ -281,6 +292,7 @@ export interface FileRouteTypes {
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/homes/$slug'
     | '/neighborhoods/$slug'
     | '/new-projects/$id'
     | '/property/$id'
@@ -423,6 +435,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomesIndexRouteImport
       parentRoute: typeof HomesRoute
     }
+    '/homes/$slug': {
+      id: '/homes/$slug'
+      path: '/$slug'
+      fullPath: '/homes/$slug'
+      preLoaderRoute: typeof HomesSlugRouteImport
+      parentRoute: typeof HomesRoute
+    }
     '/neighborhoods/': {
       id: '/neighborhoods/'
       path: '/'
@@ -503,10 +522,12 @@ const BuildingsRouteWithChildren = BuildingsRoute._addFileChildren(
 )
 
 interface HomesRouteChildren {
+  HomesSlugRoute: typeof HomesSlugRoute
   HomesIndexRoute: typeof HomesIndexRoute
 }
 
 const HomesRouteChildren: HomesRouteChildren = {
+  HomesSlugRoute: HomesSlugRoute,
   HomesIndexRoute: HomesIndexRoute,
 }
 
