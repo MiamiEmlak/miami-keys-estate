@@ -12,16 +12,20 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/neighborhoods/")({
   head: () => ({
     meta: [
-      { title: "Miami Neighborhood Intelligence | Cays Realty" },
+      { title: "Southeast Florida Neighborhood Intelligence | Cays Realty" },
       {
         name: "description",
         content:
-          "Compare Miami neighborhoods on median price, rents, price per square foot, schools, walkability and short-term-rental rules with live MLS data.",
+          "Compare 40+ luxury neighborhoods across Miami-Dade, Broward and Palm Beach on median price, rents, price per square foot, schools, walkability and short-term-rental rules.",
       },
-      { property: "og:title", content: "Miami Neighborhood Intelligence | Cays Realty" },
+      {
+        property: "og:title",
+        content: "Southeast Florida Neighborhood Intelligence | Cays Realty",
+      },
       {
         property: "og:description",
-        content: "Live median prices, rents and $/sq ft for every Miami neighborhood we cover.",
+        content:
+          "Live median prices, rents and $/sq ft for every high-end neighborhood from Brickell to Jupiter Island.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/neighborhoods" },
