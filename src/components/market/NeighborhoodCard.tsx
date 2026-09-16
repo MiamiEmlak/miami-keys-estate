@@ -9,7 +9,9 @@ export function NeighborhoodCard({
   stats,
 }: {
   neighborhood: Neighborhood;
-  stats?: { photo: string | null; medianPrice: number | null; activeCount: number; avgPpsf: number | null };
+  stats?:
+    | { photo: string | null; medianPrice: number | null; activeCount: number; avgPpsf: number | null }
+    | undefined;
 }) {
   return (
     <article className="group overflow-hidden rounded-sm border border-border bg-card transition-shadow hover:shadow-[var(--shadow-elevated)]">

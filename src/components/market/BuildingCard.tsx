@@ -9,7 +9,9 @@ export function BuildingCard({
   stats,
 }: {
   building: Building;
-  stats?: { photo: string | null; avgPpsf: number | null; activeCount: number; rentalCount: number };
+  stats?:
+    | { photo: string | null; avgPpsf: number | null; activeCount: number; rentalCount: number }
+    | undefined;
 }) {
   return (
     <article className="group overflow-hidden rounded-sm border border-border bg-card transition-shadow hover:shadow-[var(--shadow-elevated)]">
