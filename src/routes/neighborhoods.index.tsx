@@ -54,6 +54,7 @@ function NeighborhoodsIndex() {
   );
 
   const items = NEIGHBORHOOD_LIST.filter((n) => {
+    if (county && n.county !== county) return false;
     if (str && !n.strFriendly) return false;
     if (q && !`${n.name} ${n.city}`.toLowerCase().includes(q.toLowerCase())) return false;
     return true;
