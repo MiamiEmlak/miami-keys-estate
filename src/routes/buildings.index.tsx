@@ -62,6 +62,7 @@ function BuildingsDirectory() {
   const tierRange = PRICE_TIERS.find((t) => t.value === tier) ?? PRICE_TIERS[0]!;
 
   const buildings = BUILDINGS.filter((b) => {
+    if (county && countyOf(b) !== county) return false;
     if (hood && b.neighborhood !== hood) return false;
     if (q && !`${b.name} ${b.address}`.toLowerCase().includes(q.toLowerCase())) return false;
     if (tier) {
