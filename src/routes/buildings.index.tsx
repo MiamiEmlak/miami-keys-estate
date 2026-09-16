@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { getBuildingDirectoryFn } from "@/lib/buildings.functions";
-import { ListingImage } from "@/components/listings/ListingImage";
+import { BuildingCard } from "@/components/market/BuildingCard";
 import { BuildingCardSkeleton } from "@/components/listings/Skeletons";
 import { BUILDINGS, NEIGHBORHOODS, PRICE_TIERS } from "@/lib/buildings";
 import { money, num } from "@/lib/format";

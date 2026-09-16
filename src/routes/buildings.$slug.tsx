@@ -3,11 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { FileText } from "lucide-react";
+import { FileText, Heart } from "lucide-react";
 import { getBuildingProfileFn } from "@/lib/buildings.functions";
-import { getBuilding } from "@/lib/buildings";
+import { getBuilding, getBuilding as findBuilding } from "@/lib/buildings";
 import { PropertyCard } from "@/components/listings/PropertyCard";
 import { PropertyGridSkeleton } from "@/components/listings/Skeletons";
+import { MarketStatsPanel } from "@/components/market/MarketStatsPanel";
+import { HOAInfoPanel } from "@/components/market/HOAInfoPanel";
+import { STRBadge } from "@/components/market/STRBadge";
+import { WatchButton } from "@/components/market/WatchButton";
+import { AlertButton } from "@/components/market/AlertButton";
+import { TrendGraphPlaceholder } from "@/components/market/TrendGraphPlaceholder";
 import { supabase } from "@/integrations/supabase/client";
 import { money, num } from "@/lib/format";
 import { Button } from "@/components/ui/button";
@@ -66,13 +72,65 @@ function BuildingProfile() {
   const units = data?.units ?? [];
   const sales = units.filter((u) => u.property_type !== "ResidentialLease");
   const rentals = units.filter((u) => u.property_type === "ResidentialLease");
+  const similar = building.similarBuildings
+    .map((s) => findBuilding(s))
+    .filter((b): b is NonNullable<ReturnType<typeof findBuilding>> => !!b);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ApartmentComplex",
+    name: building.name,
+    description: building.blurb,
+    numberOfAccommodationUnits: building.units,
+    yearBuilt: building.yearBuilt,
+    amenityFeature: building.amenities.map((a) => ({
+      "@type": "LocationFeatureSpecification",
+      name: a,
+      value: true,
+    })),
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: building.addressPrefix,
+      addressLocality: building.city,
+      addressRegion: "FL",
+      addressCountry: "US",
+    },
+  };
 
   return (
     <main className="bg-background">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="mx-auto max-w-7xl px-6 pb-24 pt-10">
-        <p className="eyebrow text-muted-foreground">{building.neighborhood}</p>
+        <p className="eyebrow text-muted-foreground">
+          <Link
+            to="/neighborhoods/$slug"
+            params={{ slug: building.neighborhoodSlug }}
+            className="underline-offset-4 hover:underline"
+          >
+            {building.neighborhood}
+          </Link>
+        </p>
         <h1 className="mt-4 font-display text-5xl text-foreground">{building.name}</h1>
         <p className="mt-3 text-sm text-muted-foreground">{building.address}</p>
+
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <STRBadge friendly={building.strFriendly} />
+          <span className="rounded-sm bg-secondary px-2.5 py-1 text-xs text-foreground">
+            Walk score {building.walkScore}
+          </span>
+          <span className="rounded-sm bg-secondary px-2.5 py-1 text-xs text-foreground">
+            Avg price {money(building.avgPrice, { compact: true })}
+          </span>
+        </div>
+
+        <div className="mt-5 flex flex-wrap gap-3">
+          <SaveBuildingButton slug={building.slug} name={building.name} />
+          <WatchButton watchType="building" value={building.slug} label={building.name} />
+          <AlertButton
+            name={`New listings at ${building.name}`}
+            criteria={{ building: building.slug }}
+          />
+        </div>
 
         <dl className="mt-8 grid grid-cols-2 gap-6 border-y border-border py-8 sm:grid-cols-5">
           {[
@@ -80,10 +138,7 @@ function BuildingProfile() {
             ["Floors", num(building.floors)],
             ["Units", num(building.units)],
             ["HOA range", `${money(building.hoaLow)} – ${money(building.hoaHigh)}/mo`],
-            [
-              "Avg $/sq ft",
-              data?.stats?.avgPpsf ? `${money(data.stats.avgPpsf)}/sq ft` : "—",
-            ],
+            ["Avg $/sq ft", data?.stats?.avgPpsf ? `${money(data.stats.avgPpsf)}/sq ft` : "—"],
           ].map(([label, value]) => (
             <div key={label}>
               <dt className="text-xs uppercase tracking-widest text-muted-foreground">{label}</dt>
@@ -93,6 +148,30 @@ function BuildingProfile() {
         </dl>
 
         <p className="mt-8 max-w-3xl text-sm leading-relaxed text-muted-foreground">{building.blurb}</p>
+
+        <div className="mt-10 space-y-8">
+          <MarketStatsPanel stats={data?.stats} loading={isFetching} saleLabel="Median list price" />
+          <TrendGraphPlaceholder title={`${building.name} price trend`} />
+          <HOAInfoPanel
+            hoaRange={building.hoaRange}
+            hoaLow={building.hoaLow}
+            hoaHigh={building.hoaHigh}
+            amenities={building.amenities}
+            floorPlans={building.floorPlans}
+          />
+
+          <section className="rounded-sm border border-border bg-card p-6">
+            <h2 className="font-display text-xl">Walkability &amp; nearby hotspots</h2>
+            <p className="mt-2 text-sm text-muted-foreground">Walk score {building.walkScore}/100</p>
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {building.hotspots.map((h) => (
+                <li key={h} className="rounded-sm bg-secondary px-2.5 py-1 text-xs text-foreground">
+                  {h}
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
 
         <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_22rem]">
           <div>
@@ -124,12 +203,57 @@ function BuildingProfile() {
                 one lists.
               </p>
             )}
+
+            <section className="mt-16">
+              <h2 className="font-display text-3xl">Similar buildings nearby</h2>
+              <ul className="mt-6 grid gap-4 sm:grid-cols-3">
+                {similar.map((b) => (
+                  <li key={b.slug} className="rounded-sm border border-border bg-card p-5">
+                    <Link
+                      to="/buildings/$slug"
+                      params={{ slug: b.slug }}
+                      className="font-display text-lg text-foreground underline-offset-4 hover:underline"
+                    >
+                      {b.name}
+                    </Link>
+                    <p className="mt-1 text-xs text-muted-foreground">{b.neighborhood}</p>
+                    <p className="mt-2 text-xs text-muted-foreground">{b.hoaRange}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
           </div>
 
           <MonitorSidebar buildingName={building.name} buildingSlug={building.slug} />
         </div>
       </div>
     </main>
+  );
+}
+
+function SaveBuildingButton({ slug, name }: { slug: string; name: string }) {
+  const [done, setDone] = useState(false);
+  async function act() {
+    const { data: session } = await supabase.auth.getSession();
+    if (!session.session) {
+      toast.error("Sign in to save buildings.");
+      return;
+    }
+    const { error } = await supabase.from("property_watches").insert({
+      user_id: session.session.user.id,
+      watch_type: "building_saved",
+      watch_value: slug,
+    });
+    if (error) toast.error("We couldn't save that building.");
+    else {
+      setDone(true);
+      toast.success(`${name} saved to your collection.`);
+    }
+  }
+  return (
+    <Button type="button" variant="outline" onClick={act} disabled={done}>
+      <Heart className="mr-2 h-4 w-4" /> {done ? "Saved" : "Save building"}
+    </Button>
   );
 }
 
