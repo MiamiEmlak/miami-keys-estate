@@ -6,11 +6,15 @@ import { getNeighborhood } from "@/lib/neighborhoods";
 import { buildingsInNeighborhood } from "@/lib/buildings";
 import { PropertyCard } from "@/components/listings/PropertyCard";
 import { PropertyGridSkeleton } from "@/components/listings/Skeletons";
+import { ListingImage } from "@/components/listings/ListingImage";
 import { MarketStatsPanel } from "@/components/market/MarketStatsPanel";
 import { TrendGraphPlaceholder } from "@/components/market/TrendGraphPlaceholder";
+import { SectionHeader } from "@/components/market/SectionHeader";
+import { StatsPanel } from "@/components/market/StatsPanel";
 import { WatchButton } from "@/components/market/WatchButton";
 import { AlertButton } from "@/components/market/AlertButton";
 import { STRBadge } from "@/components/market/STRBadge";
+import { money } from "@/lib/format";
 
 export const Route = createFileRoute("/neighborhoods/$slug")({
   loader: ({ params }) => {
@@ -30,8 +34,8 @@ export const Route = createFileRoute("/neighborhoods/$slug")({
       };
     }
     const n = loaderData.neighborhood;
-    const title = `${n.name} Real Estate — Prices, Schools & Rentals | Cays Realty`;
-    const description = `${n.name} market intelligence: live median sale and rent prices, price per square foot, schools, walkability and short-term-rental rules.`;
+    const title = `${n.name} Real Estate — Homes, Condos & Rentals | Cays Realty`;
+    const description = `${n.name}, ${n.county} County market intelligence: live median sale and rent prices, price per square foot, top buildings, schools, walkability and short-term-rental rules.`;
     return {
       meta: [
         { title },
@@ -65,26 +69,72 @@ function NeighborhoodProfile() {
   });
 
   const towers = buildingsInNeighborhood(n.slug);
+  const sale = data?.saleListings ?? [];
+  const rent = data?.rentListings ?? [];
+  const hero = sale[0]?.photo ?? rent[0]?.photo ?? null;
+  const stats = data?.stats;
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Place",
-    name: n.name,
-    description: n.overview,
-    address: { "@type": "PostalAddress", addressLocality: n.city, addressRegion: "FL", addressCountry: "US" },
-    geo: { "@type": "GeoCoordinates", latitude: n.center.lat, longitude: n.center.lng },
+    "@graph": [
+      {
+        "@type": "Place",
+        name: n.name,
+        description: n.overview,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: n.city,
+          addressRegion: "FL",
+          addressCountry: "US",
+        },
+        geo: { "@type": "GeoCoordinates", latitude: n.center.lat, longitude: n.center.lng },
+      },
+      ...sale.slice(0, 6).map((l) => ({
+        "@type": "RealEstateListing",
+        name: l.street_address ?? n.name,
+        url: `/property/${l.listing_key}`,
+        ...(l.list_price
+          ? { offers: { "@type": "Offer", price: l.list_price, priceCurrency: "USD" } }
+          : {}),
+      })),
+    ],
   };
 
   return (
     <main className="bg-background">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <section className="relative">
+        <ListingImage
+          src={hero}
+          alt={`${n.name}, ${n.city} — featured listing photo`}
+          loading="eager"
+          className="h-[42vh] min-h-72 w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/35 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0">
+          <div className="mx-auto max-w-7xl px-6 pb-10">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-background/80">
+              {n.city} · {n.county} County
+            </p>
+            <h1 className="mt-3 font-display text-4xl text-background sm:text-6xl">{n.name}</h1>
+            <div className="mt-5 flex flex-wrap items-center gap-3 text-background">
+              <STRBadge friendly={n.strFriendly} />
+              <span className="rounded-sm bg-background/15 px-2.5 py-1 text-xs backdrop-blur">
+                Median sale {money(stats?.medianPrice, { compact: true })}
+              </span>
+              <span className="rounded-sm bg-background/15 px-2.5 py-1 text-xs backdrop-blur">
+                Median rent {stats?.medianRent ? `${money(stats.medianRent)}/mo` : "—"}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div className="mx-auto max-w-7xl px-6 pb-24 pt-10">
-        <p className="eyebrow text-muted-foreground">{n.city}</p>
-        <h1 className="mt-4 font-display text-5xl text-foreground">{n.name}</h1>
-        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted-foreground">{n.overview}</p>
+        <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{n.overview}</p>
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <STRBadge friendly={n.strFriendly} />
           <span className="rounded-sm bg-secondary px-2.5 py-1 text-xs text-foreground">
             Walk score {n.walkScore}
           </span>
@@ -101,6 +151,34 @@ function NeighborhoodProfile() {
         <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_22rem]">
           <div className="space-y-8">
             <MarketStatsPanel stats={data?.stats} loading={isFetching} saleLabel="Median sale price" />
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <StatsPanel
+                title="For sale"
+                stats={[
+                  { label: "Median price", value: money(stats?.medianPrice, { compact: true }) },
+                  {
+                    label: "Price per sq ft",
+                    value: stats?.avgPpsf ? money(stats.avgPpsf) : "—",
+                  },
+                  { label: "Active listings", value: String(stats?.activeCount ?? 0) },
+                  { label: "Price drops", value: String(stats?.priceDrops ?? 0) },
+                ]}
+              />
+              <StatsPanel
+                title="For rent"
+                stats={[
+                  {
+                    label: "Median rent",
+                    value: stats?.medianRent ? `${money(stats.medianRent)}/mo` : "—",
+                  },
+                  { label: "Active rentals", value: String(stats?.rentalCount ?? 0) },
+                  { label: "Walkability", value: `${n.walkScore}/100` },
+                  { label: "Transit", value: `${n.transitScore}/100` },
+                ]}
+              />
+            </div>
+
             <TrendGraphPlaceholder title={`${n.name} price trend`} />
 
             <section className="rounded-sm border border-border bg-card p-6">
@@ -161,21 +239,52 @@ function NeighborhoodProfile() {
             </section>
 
             <section>
-              <h2 className="font-display text-3xl">Active listings</h2>
-              {isFetching && (data?.listings?.length ?? 0) === 0 ? (
+              <SectionHeader
+                eyebrow="For sale"
+                title={`Homes & condos for sale in ${n.name}`}
+                description="Live MLS resale inventory, refreshed each time this page loads."
+              />
+              {isFetching && sale.length === 0 ? (
                 <PropertyGridSkeleton count={4} />
               ) : (
                 <div className="mt-6 grid gap-8 sm:grid-cols-2">
-                  {(data?.listings ?? []).map((l) => (
+                  {sale.map((l) => (
                     <PropertyCard key={l.listing_key} listing={{ ...l, photo_count: l.photo ? 1 : 0 }} />
                   ))}
                 </div>
               )}
-              {!isFetching && (data?.listings?.length ?? 0) === 0 && (
+              {!isFetching && sale.length === 0 && (
                 <p className="mt-6 text-sm text-muted-foreground">
-                  No active listings returned for this area right now.
+                  No active resale listings returned for this area right now.
                 </p>
               )}
+            </section>
+
+            <section>
+              <SectionHeader
+                eyebrow="For rent"
+                title={`Rentals in ${n.name}`}
+                description="Active lease listings pulled from the same live MLS feed."
+              />
+              {isFetching && rent.length === 0 ? (
+                <PropertyGridSkeleton count={2} />
+              ) : (
+                <div className="mt-6 grid gap-8 sm:grid-cols-2">
+                  {rent.map((l) => (
+                    <PropertyCard key={l.listing_key} listing={{ ...l, photo_count: l.photo ? 1 : 0 }} />
+                  ))}
+                </div>
+              )}
+              {!isFetching && rent.length === 0 && (
+                <p className="mt-6 text-sm text-muted-foreground">
+                  No active rentals returned for this area right now.
+                </p>
+              )}
+            </section>
+
+            <section className="rounded-sm border border-border bg-secondary/40 p-8">
+              <h2 className="font-display text-2xl">{n.name} real estate guide</h2>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{n.seoText}</p>
             </section>
           </div>
 
