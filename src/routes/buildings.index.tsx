@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { getBuildingDirectoryFn } from "@/lib/buildings.functions";
-import { ListingImage } from "@/components/listings/ListingImage";
+import { BuildingCard } from "@/components/market/BuildingCard";
 import { BuildingCardSkeleton } from "@/components/listings/Skeletons";
 import { BUILDINGS, NEIGHBORHOODS, PRICE_TIERS } from "@/lib/buildings";
 import { money, num } from "@/lib/format";
@@ -132,54 +132,9 @@ function BuildingsDirectory() {
         )}
 
         <div className={`mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3 ${isFetching ? "hidden" : ""}`}>
-          {buildings.map((b) => {
-            const s = statsBySlug[b.slug];
-            return (
-              <article
-                key={b.slug}
-                className="group overflow-hidden rounded-sm border border-border bg-card transition-shadow hover:shadow-[var(--shadow-elevated)]"
-              >
-                <Link to="/buildings/$slug" params={{ slug: b.slug }} className="block">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
-                    <ListingImage
-                      src={s?.photo}
-                      alt={`${b.name} in ${b.neighborhood}, Miami`}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                    />
-                    {s?.avgPpsf ? (
-                      <span className="absolute left-3 top-3 rounded-sm bg-primary/90 px-2 py-1 text-[10px] uppercase tracking-widest text-primary-foreground">
-                        Avg {money(s.avgPpsf)}/sq ft
-                      </span>
-                    ) : null}
-                  </div>
-                </Link>
-                <div className="p-6">
-                  <p className="eyebrow text-muted-foreground">{b.neighborhood}</p>
-                  <h2 className="mt-2 font-display text-2xl text-foreground">{b.name}</h2>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{b.blurb}</p>
-                  <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-border pt-5 text-sm">
-                    <div>
-                      <dt className="text-xs uppercase tracking-widest text-muted-foreground">Units</dt>
-                      <dd className="mt-1 text-foreground">{num(b.units)}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs uppercase tracking-widest text-muted-foreground">
-                        Active listings
-                      </dt>
-                      <dd className="mt-1 text-foreground">{s ? num(s.activeCount) : "—"}</dd>
-                    </div>
-                  </dl>
-                  <Link
-                    to="/buildings/$slug"
-                    params={{ slug: b.slug }}
-                    className="mt-6 inline-flex w-full items-center justify-center rounded-sm bg-primary px-4 py-3 text-xs uppercase tracking-widest text-primary-foreground"
-                  >
-                    View building intelligence
-                  </Link>
-                </div>
-              </article>
-            );
-          })}
+          {buildings.map((b) => (
+            <BuildingCard key={b.slug} building={b} stats={statsBySlug[b.slug]} />
+          ))}
         </div>
 
         {buildings.length === 0 && (

@@ -1,12 +1,12 @@
 // Server-only: live building statistics and unit lists from the Trestle OData feed.
 import { readTrestleEnv, trestleGet, normalizeProperty } from "./trestle.server";
+import { summarize, photoOf, EMPTY_STATS, type MarketStats } from "./market.server";
 import { BUILDINGS, getBuilding, type Building } from "./buildings";
 
-export type BuildingStats = {
+export type BuildingStats = MarketStats & {
   slug: string;
-  activeCount: number;
-  rentalCount: number;
-  avgPpsf: number | null;
+  avgPrice: number | null;
+  avgRent: number | null;
   minPrice: number | null;
   photo: string | null;
 };
@@ -18,19 +18,13 @@ const esc = (v: string) => v.replace(/'/g, "''");
 const cache = new Map<string, { at: number; data: BuildingStats }>();
 const TTL = 10 * 60 * 1000;
 
-function photoOf(raw: Record<string, unknown>): string | null {
-  const media = raw["Media"];
-  if (!Array.isArray(media)) return null;
-  const photos = (media as Record<string, unknown>[])
-    .filter((m) => typeof m["MediaURL"] === "string" && m["MediaCategory"] !== "Document")
-    .sort((a, b) => Number(a["Order"] ?? 0) - Number(b["Order"] ?? 0));
-  return (photos[0]?.["MediaURL"] as string) ?? null;
-}
-
 function buildingFilter(b: Building, extra?: string) {
   const base = `StandardStatus eq 'Active' and City eq '${esc(b.city)}' and startswith(UnparsedAddress,'${esc(b.addressPrefix)}')`;
   return extra ? `${base} and ${extra}` : base;
 }
+
+const avg = (values: number[]) =>
+  values.length ? Math.round(values.reduce((a, c) => a + c, 0) / values.length) : null;
 
 async function statsFor(b: Building): Promise<BuildingStats> {
   const hit = cache.get(b.slug);
@@ -38,10 +32,10 @@ async function statsFor(b: Building): Promise<BuildingStats> {
 
   const { env } = readTrestleEnv();
   const empty: BuildingStats = {
+    ...EMPTY_STATS,
     slug: b.slug,
-    activeCount: 0,
-    rentalCount: 0,
-    avgPpsf: null,
+    avgPrice: null,
+    avgRent: null,
     minPrice: null,
     photo: null,
   };
@@ -49,7 +43,7 @@ async function statsFor(b: Building): Promise<BuildingStats> {
 
   try {
     const res = await trestleGet(env, "Property", {
-      $top: "20",
+      $top: "40",
       $count: "true",
       $filter: buildingFilter(b),
       $orderby: "ListPrice asc",
@@ -58,17 +52,16 @@ async function statsFor(b: Building): Promise<BuildingStats> {
 
     const rows = res.value.map(normalizeProperty);
     const sales = rows.filter((r) => r.property_type !== "ResidentialLease");
-    const ppsf = sales
-      .filter((r) => r.list_price && r.living_area)
-      .map((r) => r.list_price! / r.living_area!);
+    const rentals = rows.filter((r) => r.property_type === "ResidentialLease");
     const prices = sales.map((r) => r.list_price).filter((p): p is number => typeof p === "number");
+    const rents = rentals.map((r) => r.list_price).filter((p): p is number => typeof p === "number");
     const withPhoto = res.value.find((raw) => photoOf(raw));
 
     const data: BuildingStats = {
+      ...summarize(rows),
       slug: b.slug,
-      activeCount: res.count ?? rows.length,
-      rentalCount: rows.filter((r) => r.property_type === "ResidentialLease").length,
-      avgPpsf: ppsf.length ? Math.round(ppsf.reduce((a, c) => a + c, 0) / ppsf.length) : null,
+      avgPrice: avg(prices),
+      avgRent: avg(rents),
       minPrice: prices.length ? Math.min(...prices) : null,
       photo: withPhoto ? photoOf(withPhoto) : null,
     };

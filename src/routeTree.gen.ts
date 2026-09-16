@@ -15,6 +15,8 @@ import { Route as AskRouteImport } from './routes/ask'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as CompareRouteImport } from './routes/compare'
+import { Route as HomesRouteImport } from './routes/homes'
+import { Route as NeighborhoodsRouteImport } from './routes/neighborhoods'
 import { Route as NewProjectsRouteImport } from './routes/new-projects'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SearchRouteImport } from './routes/search'
@@ -22,11 +24,17 @@ import { Route as SellRouteImport } from './routes/sell'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as BuildingsIndexRouteImport } from './routes/buildings.index'
 import { Route as BuildingsSlugRouteImport } from './routes/buildings.$slug'
+import { Route as HomesIndexRouteImport } from './routes/homes.index'
+import { Route as HomesSlugRouteImport } from './routes/homes.$slug'
+import { Route as NeighborhoodsIndexRouteImport } from './routes/neighborhoods.index'
+import { Route as NeighborhoodsSlugRouteImport } from './routes/neighborhoods.$slug'
 import { Route as NewProjectsIndexRouteImport } from './routes/new-projects.index'
 import { Route as NewProjectsIdRouteImport } from './routes/new-projects.$id'
 import { Route as PropertyIdRouteImport } from './routes/property.$id'
 import { Route as AuthenticatedAdminNewProjectsRouteImport } from './routes/_authenticated/admin/new-projects'
 import { Route as AuthenticatedAdminTrestleRouteImport } from './routes/_authenticated/admin/trestle'
+import { Route as ApiPublicHooksSendUserAlertsRouteImport } from './routes/api/public/hooks/send-user-alerts'
+import { Route as ApiPublicHooksSyncPriceHistoryRouteImport } from './routes/api/public/hooks/sync-price-history'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -55,6 +63,16 @@ const BuildingsRoute = BuildingsRouteImport.update({
 const CompareRoute = CompareRouteImport.update({
   id: '/compare',
   path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomesRoute = HomesRouteImport.update({
+  id: '/homes',
+  path: '/homes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeighborhoodsRoute = NeighborhoodsRouteImport.update({
+  id: '/neighborhoods',
+  path: '/neighborhoods',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewProjectsRoute = NewProjectsRouteImport.update({
@@ -92,6 +110,26 @@ const BuildingsSlugRoute = BuildingsSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BuildingsRoute,
 } as any)
+const HomesIndexRoute = HomesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => HomesRoute,
+} as any)
+const HomesSlugRoute = HomesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => HomesRoute,
+} as any)
+const NeighborhoodsIndexRoute = NeighborhoodsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => NeighborhoodsRoute,
+} as any)
+const NeighborhoodsSlugRoute = NeighborhoodsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => NeighborhoodsRoute,
+} as any)
 const NewProjectsIndexRoute = NewProjectsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -119,6 +157,18 @@ const AuthenticatedAdminTrestleRoute =
     path: '/admin/trestle',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicHooksSendUserAlertsRoute =
+  ApiPublicHooksSendUserAlertsRouteImport.update({
+    id: '/api/public/hooks/send-user-alerts',
+    path: '/api/public/hooks/send-user-alerts',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksSyncPriceHistoryRoute =
+  ApiPublicHooksSyncPriceHistoryRouteImport.update({
+    id: '/api/public/hooks/sync-price-history',
+    path: '/api/public/hooks/sync-price-history',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -126,18 +176,26 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
+  '/homes': typeof HomesRouteWithChildren
+  '/neighborhoods': typeof NeighborhoodsRouteWithChildren
   '/new-projects': typeof NewProjectsRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/homes/$slug': typeof HomesSlugRoute
+  '/neighborhoods/$slug': typeof NeighborhoodsSlugRoute
   '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
+  '/homes/': typeof HomesIndexRoute
+  '/neighborhoods/': typeof NeighborhoodsIndexRoute
   '/new-projects/': typeof NewProjectsIndexRoute
   '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
+  '/api/public/hooks/send-user-alerts': typeof ApiPublicHooksSendUserAlertsRoute
+  '/api/public/hooks/sync-price-history': typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -149,12 +207,18 @@ export interface FileRoutesByTo {
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/homes/$slug': typeof HomesSlugRoute
+  '/neighborhoods/$slug': typeof NeighborhoodsSlugRoute
   '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings': typeof BuildingsIndexRoute
+  '/homes': typeof HomesIndexRoute
+  '/neighborhoods': typeof NeighborhoodsIndexRoute
   '/new-projects': typeof NewProjectsIndexRoute
   '/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/admin/trestle': typeof AuthenticatedAdminTrestleRoute
+  '/api/public/hooks/send-user-alerts': typeof ApiPublicHooksSendUserAlertsRoute
+  '/api/public/hooks/sync-price-history': typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -164,18 +228,26 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/buildings': typeof BuildingsRouteWithChildren
   '/compare': typeof CompareRoute
+  '/homes': typeof HomesRouteWithChildren
+  '/neighborhoods': typeof NeighborhoodsRouteWithChildren
   '/new-projects': typeof NewProjectsRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
   '/sell': typeof SellRoute
   '/terms': typeof TermsRoute
   '/buildings/$slug': typeof BuildingsSlugRoute
+  '/homes/$slug': typeof HomesSlugRoute
+  '/neighborhoods/$slug': typeof NeighborhoodsSlugRoute
   '/new-projects/$id': typeof NewProjectsIdRoute
   '/property/$id': typeof PropertyIdRoute
   '/buildings/': typeof BuildingsIndexRoute
+  '/homes/': typeof HomesIndexRoute
+  '/neighborhoods/': typeof NeighborhoodsIndexRoute
   '/new-projects/': typeof NewProjectsIndexRoute
   '/_authenticated/admin/new-projects': typeof AuthenticatedAdminNewProjectsRoute
   '/_authenticated/admin/trestle': typeof AuthenticatedAdminTrestleRoute
+  '/api/public/hooks/send-user-alerts': typeof ApiPublicHooksSendUserAlertsRoute
+  '/api/public/hooks/sync-price-history': typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -185,18 +257,26 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/compare'
+    | '/homes'
+    | '/neighborhoods'
     | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/homes/$slug'
+    | '/neighborhoods/$slug'
     | '/new-projects/$id'
     | '/property/$id'
     | '/buildings/'
+    | '/homes/'
+    | '/neighborhoods/'
     | '/new-projects/'
     | '/admin/new-projects'
     | '/admin/trestle'
+    | '/api/public/hooks/send-user-alerts'
+    | '/api/public/hooks/sync-price-history'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -208,12 +288,18 @@ export interface FileRouteTypes {
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/homes/$slug'
+    | '/neighborhoods/$slug'
     | '/new-projects/$id'
     | '/property/$id'
     | '/buildings'
+    | '/homes'
+    | '/neighborhoods'
     | '/new-projects'
     | '/admin/new-projects'
     | '/admin/trestle'
+    | '/api/public/hooks/send-user-alerts'
+    | '/api/public/hooks/sync-price-history'
   id:
     | '__root__'
     | '/'
@@ -222,18 +308,26 @@ export interface FileRouteTypes {
     | '/auth'
     | '/buildings'
     | '/compare'
+    | '/homes'
+    | '/neighborhoods'
     | '/new-projects'
     | '/privacy'
     | '/search'
     | '/sell'
     | '/terms'
     | '/buildings/$slug'
+    | '/homes/$slug'
+    | '/neighborhoods/$slug'
     | '/new-projects/$id'
     | '/property/$id'
     | '/buildings/'
+    | '/homes/'
+    | '/neighborhoods/'
     | '/new-projects/'
     | '/_authenticated/admin/new-projects'
     | '/_authenticated/admin/trestle'
+    | '/api/public/hooks/send-user-alerts'
+    | '/api/public/hooks/sync-price-history'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -243,12 +337,16 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BuildingsRoute: typeof BuildingsRouteWithChildren
   CompareRoute: typeof CompareRoute
+  HomesRoute: typeof HomesRouteWithChildren
+  NeighborhoodsRoute: typeof NeighborhoodsRouteWithChildren
   NewProjectsRoute: typeof NewProjectsRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
   SearchRoute: typeof SearchRoute
   SellRoute: typeof SellRoute
   TermsRoute: typeof TermsRoute
   PropertyIdRoute: typeof PropertyIdRoute
+  ApiPublicHooksSendUserAlertsRoute: typeof ApiPublicHooksSendUserAlertsRoute
+  ApiPublicHooksSyncPriceHistoryRoute: typeof ApiPublicHooksSyncPriceHistoryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -293,6 +391,20 @@ declare module '@tanstack/react-router' {
       path: '/compare'
       fullPath: '/compare'
       preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/homes': {
+      id: '/homes'
+      path: '/homes'
+      fullPath: '/homes'
+      preLoaderRoute: typeof HomesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neighborhoods': {
+      id: '/neighborhoods'
+      path: '/neighborhoods'
+      fullPath: '/neighborhoods'
+      preLoaderRoute: typeof NeighborhoodsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/new-projects': {
@@ -344,6 +456,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BuildingsSlugRouteImport
       parentRoute: typeof BuildingsRoute
     }
+    '/homes/': {
+      id: '/homes/'
+      path: '/'
+      fullPath: '/homes/'
+      preLoaderRoute: typeof HomesIndexRouteImport
+      parentRoute: typeof HomesRoute
+    }
+    '/homes/$slug': {
+      id: '/homes/$slug'
+      path: '/$slug'
+      fullPath: '/homes/$slug'
+      preLoaderRoute: typeof HomesSlugRouteImport
+      parentRoute: typeof HomesRoute
+    }
+    '/neighborhoods/': {
+      id: '/neighborhoods/'
+      path: '/'
+      fullPath: '/neighborhoods/'
+      preLoaderRoute: typeof NeighborhoodsIndexRouteImport
+      parentRoute: typeof NeighborhoodsRoute
+    }
+    '/neighborhoods/$slug': {
+      id: '/neighborhoods/$slug'
+      path: '/$slug'
+      fullPath: '/neighborhoods/$slug'
+      preLoaderRoute: typeof NeighborhoodsSlugRouteImport
+      parentRoute: typeof NeighborhoodsRoute
+    }
     '/new-projects/': {
       id: '/new-projects/'
       path: '/'
@@ -379,6 +519,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminTrestleRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/hooks/send-user-alerts': {
+      id: '/api/public/hooks/send-user-alerts'
+      path: '/api/public/hooks/send-user-alerts'
+      fullPath: '/api/public/hooks/send-user-alerts'
+      preLoaderRoute: typeof ApiPublicHooksSendUserAlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/sync-price-history': {
+      id: '/api/public/hooks/sync-price-history'
+      path: '/api/public/hooks/sync-price-history'
+      fullPath: '/api/public/hooks/sync-price-history'
+      preLoaderRoute: typeof ApiPublicHooksSyncPriceHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -409,6 +563,32 @@ const BuildingsRouteWithChildren = BuildingsRoute._addFileChildren(
   BuildingsRouteChildren,
 )
 
+interface HomesRouteChildren {
+  HomesSlugRoute: typeof HomesSlugRoute
+  HomesIndexRoute: typeof HomesIndexRoute
+}
+
+const HomesRouteChildren: HomesRouteChildren = {
+  HomesSlugRoute: HomesSlugRoute,
+  HomesIndexRoute: HomesIndexRoute,
+}
+
+const HomesRouteWithChildren = HomesRoute._addFileChildren(HomesRouteChildren)
+
+interface NeighborhoodsRouteChildren {
+  NeighborhoodsSlugRoute: typeof NeighborhoodsSlugRoute
+  NeighborhoodsIndexRoute: typeof NeighborhoodsIndexRoute
+}
+
+const NeighborhoodsRouteChildren: NeighborhoodsRouteChildren = {
+  NeighborhoodsSlugRoute: NeighborhoodsSlugRoute,
+  NeighborhoodsIndexRoute: NeighborhoodsIndexRoute,
+}
+
+const NeighborhoodsRouteWithChildren = NeighborhoodsRoute._addFileChildren(
+  NeighborhoodsRouteChildren,
+)
+
 interface NewProjectsRouteChildren {
   NewProjectsIdRoute: typeof NewProjectsIdRoute
   NewProjectsIndexRoute: typeof NewProjectsIndexRoute
@@ -430,12 +610,16 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BuildingsRoute: BuildingsRouteWithChildren,
   CompareRoute: CompareRoute,
+  HomesRoute: HomesRouteWithChildren,
+  NeighborhoodsRoute: NeighborhoodsRouteWithChildren,
   NewProjectsRoute: NewProjectsRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
   SearchRoute: SearchRoute,
   SellRoute: SellRoute,
   TermsRoute: TermsRoute,
   PropertyIdRoute: PropertyIdRoute,
+  ApiPublicHooksSendUserAlertsRoute: ApiPublicHooksSendUserAlertsRoute,
+  ApiPublicHooksSyncPriceHistoryRoute: ApiPublicHooksSyncPriceHistoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
