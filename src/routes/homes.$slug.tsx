@@ -276,6 +276,27 @@ function HomeProfile() {
             ))}
           </div>
         </section>
+
+        <section className="mt-16 rounded-sm border border-border bg-secondary/40 p-8">
+          <h2 className="font-display text-2xl">
+            Buying a single-family home in {home.city ?? "Southeast Florida"}
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            This {home.bedrooms_total ?? "—"}-bedroom home at {fullAddress(home)} sits in the{" "}
+            {neighborhood.name} area of {neighborhood.county} County, zoned to schools including{" "}
+            {neighborhood.schools
+              .slice(0, 2)
+              .map((s) => s.name)
+              .join(" and ")}
+            . Cays Realty pulls the beds, baths, lot size, year built and price history above
+            directly from the MLS, then layers on renovation and investment context our advisors
+            gather from permit records and recent nearby closings.
+          </p>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            {neighborhood.investmentPotential} Set an alert on this search and we'll email you the
+            moment a comparable {neighborhood.name} home lists or drops in price.
+          </p>
+        </section>
       </div>
     </main>
   );
